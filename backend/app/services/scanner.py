@@ -13,9 +13,9 @@ from app.services.strategy.swing import evaluate_swing_signal
 logger = logging.getLogger("scanner")
 
 BATCH_SIZE = 50
-CONCURRENT = 8
-PAUSE_BETWEEN_BATCHES = 0
-SCAN_INTERVAL_HOURS = 2
+CONCURRENT = 3
+PAUSE_BETWEEN_BATCHES = 3
+SCAN_INTERVAL_HOURS = 12
 DAYS_LOOKBACK = 90
 
 
