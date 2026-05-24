@@ -2,6 +2,11 @@
 
 面向A股市场的智能量化选股与交易辅助系统，提供波段策略、短线情绪分析、持仓风控、AI对话复盘等功能。
 
+## 官网链接
+
+- [登录页面](https://soulmy.asia/%E7%99%BB%E5%BD%95.htm)
+- [选股看板](https://soulmy.asia/%E9%80%89%E8%82%A1%E7%9C%8B%E6%9D%BF.html)
+
 ## 项目结构
 
 ```
@@ -138,17 +143,32 @@ TAVILY_API_KEY=你的Tavily密钥
 BRAVE_API_KEY=你的Brave密钥
 ```
 
-### 支付FM配置（可选，如需付费功能）
+## 支付接入
 
-```env
-ZHIFUFM_API_URL=https://你的接口根地址
-ZHIFUFM_MERCHANT_NUM=你的商户号
-ZHIFUFM_SECRET=你的接入密钥
-ZHIFUFM_PAY_TYPE=aloop
-ZHIFUFM_NOTIFY_URL=https://你的云函数地址/notify
-BILLING_PUBLIC_BASE_URL=https://你的公网域名
-ADMIN_SECRET=换一个管理员密钥
-```
+本项目使用 [支付FM](https://www.zhifux.com) 作为支付服务商。
+
+### 相关链接
+
+- [支付FM 后台管理 - 统计分析](https://wmp.zhifux.com/statistical-analysis)
+- [支付FM 接口文档总览](https://docs.zhifux.com)
+- [创建订单接口](https://docs.zhifux.com/read/zhifufm/startorder)
+- [支付通知（回调）接口](https://docs.zhifux.com/read/zhifufm/notify)
+
+### 接入流程
+
+1. **创建订单** — 调用[创建订单接口](https://docs.zhifux.com/read/zhifufm/startorder)，在请求参数中传入回调地址（`notify_url`），支付FM会在支付完成后向该地址发送异步通知。
+
+2. **支付通知（回调）** — 支付成功后，支付FM会以 POST 方式向创建订单时传入的 `notify_url` 发送支付结果通知，详见[支付通知文档](https://docs.zhifux.com/read/zhifufm/notify)。
+
+### 常见问题
+
+**Q: 回调地址怎么填？**
+
+回调地址不是在后台固定配置的，而是在每次调用创建订单接口时，通过 `notify_url` 参数动态传入。
+
+**Q: 会出现订单访问不到的情况吗？**
+
+确保 `notify_url` 填的是公网可访问地址（不能是 `127.0.0.1`），且云函数/服务器防火墙已放行对应端口。详见 [DEPLOY.md](./DEPLOY.md) 部署指南。
 
 ### 其他配置
 
