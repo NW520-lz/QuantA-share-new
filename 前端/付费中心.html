@@ -1,0 +1,268 @@
+<!doctype html>
+<html class="dark" lang="zh-CN">
+    <head>
+        <meta charset="utf-8" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+        <title>QuantA Share | 付费中心</title>
+        <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+        <style>
+            .material-symbols-outlined { font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24; }
+        </style>
+    </head>
+    <body class="bg-zinc-950 text-zinc-100 min-h-screen">
+        <!-- 顶部导航 -->
+        <nav class="border-b border-zinc-800 px-4 py-3 flex items-center gap-3">
+            <a href="选股看板.html" class="flex items-center gap-1.5 text-zinc-400 hover:text-zinc-200 text-sm transition-colors">
+                <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                返回看板
+            </a>
+            <span class="text-zinc-700">|</span>
+            <span class="text-sm font-semibold text-zinc-200">付费中心</span>
+        </nav>
+
+        <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
+
+            <!-- 未登录提示 -->
+            <div id="not-logged-in" class="hidden bg-zinc-900 border border-zinc-700 rounded-xl px-5 py-4 flex items-center justify-between gap-4">
+                <p class="text-sm text-zinc-300">请先登录才能开通会员</p>
+                <a href="登录.html?redirect=付费中心.html" class="bg-blue-500 hover:bg-blue-400 text-white text-sm px-4 py-2 rounded-lg transition-colors">
+                    立即登录
+                </a>
+            </div>
+
+            <!-- 标题 -->
+            <div class="text-center space-y-2">
+                <h1 class="text-3xl font-bold tracking-tight">选择你的修炼等级</h1>
+                <p class="text-zinc-400 text-sm">开通会员，解锁全部量化功能 · 支持支付宝 / 微信扫码付款</p>
+            </div>
+
+            <!-- 当前状态 -->
+            <div id="current-status" class="hidden bg-emerald-950 border border-emerald-800 rounded-lg px-4 py-3 text-sm text-emerald-300 text-center"></div>
+
+            <!-- 三栏等级对比 -->
+            <div class="grid md:grid-cols-3 gap-5">
+
+                <!-- 蝼蚁期 -->
+                <div class="border border-zinc-700 rounded-2xl bg-zinc-900 p-6 flex flex-col gap-4">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl font-bold text-zinc-300">蝼蚁期</span>
+                            <span class="text-xs bg-zinc-700 text-zinc-400 px-2 py-0.5 rounded-full">免费</span>
+                        </div>
+                        <p class="text-3xl font-bold">¥0</p>
+                        <p class="text-xs text-zinc-500 mt-0.5">永久免费，无需付款</p>
+                    </div>
+                    <ul class="space-y-2 text-sm flex-1">
+                        <li class="flex items-start gap-2 text-zinc-300">
+                            <span class="text-green-400 mt-0.5 shrink-0">✓</span>
+                            <span>选股看板（只读，查看扫描结果）</span>
+                        </li>
+                        <li class="flex items-start gap-2 text-zinc-500">
+                            <span class="text-zinc-600 mt-0.5 shrink-0">✗</span>
+                            <span>持仓风控</span>
+                        </li>
+                        <li class="flex items-start gap-2 text-zinc-500">
+                            <span class="text-zinc-600 mt-0.5 shrink-0">✗</span>
+                            <span>复盘日志</span>
+                        </li>
+                        <li class="flex items-start gap-2 text-zinc-500">
+                            <span class="text-zinc-600 mt-0.5 shrink-0">✗</span>
+                            <span>策略参数配置</span>
+                        </li>
+                        <li class="flex items-start gap-2 text-zinc-500">
+                            <span class="text-zinc-600 mt-0.5 shrink-0">✗</span>
+                            <span>AI 量化对话</span>
+                        </li>
+                        <li class="flex items-start gap-2 text-zinc-500">
+                            <span class="text-zinc-600 mt-0.5 shrink-0">✗</span>
+                            <span>系统设置</span>
+                        </li>
+                    </ul>
+                    <a href="选股看板.html"
+                       class="block w-full text-center rounded-xl border border-zinc-600 py-2.5 text-sm text-zinc-400 hover:bg-zinc-800 transition-colors">
+                        以蝼蚁身份进入
+                    </a>
+                </div>
+
+                <!-- 道友期 -->
+                <div class="border-2 border-blue-500 rounded-2xl bg-zinc-900 p-6 flex flex-col gap-4 relative">
+                    <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
+                        <span class="bg-blue-500 text-white text-xs font-medium px-3 py-1 rounded-full shadow">推荐</span>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl font-bold text-blue-300">道友期</span>
+                        </div>
+                        <p class="text-3xl font-bold">¥29.9<span class="text-base font-normal text-zinc-400"> / 月</span></p>
+                        <p class="text-xs text-zinc-500 mt-0.5">30天有效期，到期可续费</p>
+                    </div>
+                    <ul class="space-y-2 text-sm flex-1">
+                        <li class="flex items-start gap-2 text-zinc-300">
+                            <span class="text-green-400 mt-0.5 shrink-0">✓</span>
+                            <span>选股看板（完整功能）</span>
+                        </li>
+                        <li class="flex items-start gap-2 text-zinc-300">
+                            <span class="text-green-400 mt-0.5 shrink-0">✓</span>
+                            <span>持仓风控 · 仓位管理</span>
+                        </li>
+                        <li class="flex items-start gap-2 text-zinc-300">
+                            <span class="text-green-400 mt-0.5 shrink-0">✓</span>
+                            <span>复盘日志 · 交易记录</span>
+                        </li>
+                        <li class="flex items-start gap-2 text-zinc-300">
+                            <span class="text-green-400 mt-0.5 shrink-0">✓</span>
+                            <span>策略参数 · 自定义配置</span>
+                        </li>
+                        <li class="flex items-start gap-2 text-zinc-300">
+                            <span class="text-green-400 mt-0.5 shrink-0">✓</span>
+                            <span>AI 量化对话</span>
+                        </li>
+                        <li class="flex items-start gap-2 text-zinc-300">
+                            <span class="text-green-400 mt-0.5 shrink-0">✓</span>
+                            <span>系统设置</span>
+                        </li>
+                    </ul>
+                    <button data-plan="daoyou_monthly"
+                            class="plan-btn w-full rounded-xl bg-blue-500 py-2.5 text-sm text-white hover:bg-blue-400 font-medium transition-colors">
+                        立即开通道友期
+                    </button>
+                </div>
+
+                <!-- 前辈期 -->
+                <div class="border-2 border-amber-500 rounded-2xl bg-zinc-900 p-6 flex flex-col gap-4 relative">
+                    <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
+                        <span class="bg-amber-500 text-white text-xs font-medium px-3 py-1 rounded-full shadow">年付省44%</span>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl font-bold text-amber-300">前辈期</span>
+                        </div>
+                        <p class="text-3xl font-bold">¥199<span class="text-base font-normal text-zinc-400"> / 年</span></p>
+                        <p class="text-xs text-zinc-500 mt-0.5">365天 · 相当于 ¥16.6/月</p>
+                    </div>
+                    <ul class="space-y-2 text-sm flex-1">
+                        <li class="flex items-start gap-2 text-zinc-300">
+                            <span class="text-amber-400 mt-0.5 shrink-0">★</span>
+                            <span>全部道友期功能</span>
+                        </li>
+                        <li class="flex items-start gap-2 text-zinc-300">
+                            <span class="text-amber-400 mt-0.5 shrink-0">★</span>
+                            <span>前辈专属标识</span>
+                        </li>
+                        <li class="flex items-start gap-2 text-zinc-300">
+                            <span class="text-amber-400 mt-0.5 shrink-0">★</span>
+                            <span>新功能优先体验</span>
+                        </li>
+                        <li class="flex items-start gap-2 text-zinc-300">
+                            <span class="text-amber-400 mt-0.5 shrink-0">★</span>
+                            <span>一次付款，全年无忧</span>
+                        </li>
+                        <li class="flex items-start gap-2 text-zinc-500 text-xs mt-1">
+                            <span class="shrink-0">·</span>
+                            <span>与道友期功能完全相同，仅周期不同</span>
+                        </li>
+                    </ul>
+                    <button data-plan="qianbei_yearly"
+                            class="plan-btn w-full rounded-xl bg-amber-500 py-2.5 text-sm text-white hover:bg-amber-400 font-medium transition-colors">
+                        立即开通前辈期
+                    </button>
+                </div>
+            </div>
+
+            <!-- 功能对比表 -->
+            <div class="border border-zinc-800 rounded-2xl overflow-hidden">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="bg-zinc-900 border-b border-zinc-800">
+                            <th class="text-left px-4 py-3 text-zinc-400 font-medium">功能</th>
+                            <th class="text-center px-4 py-3 text-zinc-400 font-medium">蝼蚁期</th>
+                            <th class="text-center px-4 py-3 text-blue-400 font-medium">道友期</th>
+                            <th class="text-center px-4 py-3 text-amber-400 font-medium">前辈期</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-800">
+                        <tr class="bg-zinc-950/50">
+                            <td class="px-4 py-2.5 text-zinc-300">选股看板</td>
+                            <td class="px-4 py-2.5 text-center text-zinc-500">只读</td>
+                            <td class="px-4 py-2.5 text-center text-green-400">完整</td>
+                            <td class="px-4 py-2.5 text-center text-green-400">完整</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2.5 text-zinc-300">持仓风控</td>
+                            <td class="px-4 py-2.5 text-center text-zinc-600">—</td>
+                            <td class="px-4 py-2.5 text-center text-green-400">✓</td>
+                            <td class="px-4 py-2.5 text-center text-green-400">✓</td>
+                        </tr>
+                        <tr class="bg-zinc-950/50">
+                            <td class="px-4 py-2.5 text-zinc-300">复盘日志</td>
+                            <td class="px-4 py-2.5 text-center text-zinc-600">—</td>
+                            <td class="px-4 py-2.5 text-center text-green-400">✓</td>
+                            <td class="px-4 py-2.5 text-center text-green-400">✓</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2.5 text-zinc-300">策略参数</td>
+                            <td class="px-4 py-2.5 text-center text-zinc-600">—</td>
+                            <td class="px-4 py-2.5 text-center text-green-400">✓</td>
+                            <td class="px-4 py-2.5 text-center text-green-400">✓</td>
+                        </tr>
+                        <tr class="bg-zinc-950/50">
+                            <td class="px-4 py-2.5 text-zinc-300">AI 量化对话</td>
+                            <td class="px-4 py-2.5 text-center text-zinc-600">—</td>
+                            <td class="px-4 py-2.5 text-center text-green-400">✓</td>
+                            <td class="px-4 py-2.5 text-center text-green-400">✓</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2.5 text-zinc-300">有效期</td>
+                            <td class="px-4 py-2.5 text-center text-zinc-400">永久</td>
+                            <td class="px-4 py-2.5 text-center text-zinc-300">30天</td>
+                            <td class="px-4 py-2.5 text-center text-zinc-300">365天</td>
+                        </tr>
+                        <tr class="bg-zinc-950/50">
+                            <td class="px-4 py-2.5 text-zinc-300">价格</td>
+                            <td class="px-4 py-2.5 text-center text-zinc-400">免费</td>
+                            <td class="px-4 py-2.5 text-center text-blue-300 font-bold">¥29.9/月</td>
+                            <td class="px-4 py-2.5 text-center text-amber-300 font-bold">¥199/年</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 打赏区域 -->
+            <div class="border border-zinc-700 rounded-2xl bg-zinc-900 p-5 space-y-3">
+                <div class="flex items-center gap-2">
+                    <span class="text-base font-semibold">打赏支持</span>
+                    <span class="text-xs bg-zinc-700 text-zinc-400 px-2 py-0.5 rounded-full">有机会获得道友期</span>
+                </div>
+                <p class="text-sm text-zinc-400">打赏任意金额，请使用支付宝/微信扫描下方二维码。</p>
+                <div class="flex gap-3 flex-wrap justify-center">
+                    <img src="./images/打赏二维码.jpg" alt="打赏二维码" class="w-48 h-48 rounded-lg shadow-lg" />
+                </div>
+            </div>
+
+            <!-- 常见问题 -->
+            <div class="space-y-3 text-sm text-zinc-400">
+                <p class="font-medium text-zinc-300">常见问题</p>
+                <div class="space-y-2">
+                    <details class="border border-zinc-800 rounded-lg px-4 py-2 cursor-pointer">
+                        <summary class="text-zinc-300">付款后多久生效？</summary>
+                        <p class="mt-2 text-zinc-500">支付宝/微信付款成功后，系统自动回调激活，通常在30秒内生效。如超过5分钟未生效，请联系管理员。</p>
+                    </details>
+                    <details class="border border-zinc-800 rounded-lg px-4 py-2 cursor-pointer">
+                        <summary class="text-zinc-300">到期后数据会丢失吗？</summary>
+                        <p class="mt-2 text-zinc-500">不会。到期后降为蝼蚁期，历史数据保留，续费后立即恢复访问。</p>
+                    </details>
+                    <details class="border border-zinc-800 rounded-lg px-4 py-2 cursor-pointer">
+                        <summary class="text-zinc-300">支持退款吗？</summary>
+                        <p class="mt-2 text-zinc-500">虚拟服务一经开通不支持退款，请确认后再付款。</p>
+                    </details>
+                </div>
+            </div>
+
+            <!-- 错误提示 -->
+            <p id="billing-error" class="text-sm text-red-400 text-center hidden"></p>
+        </div>
+
+        <script type="module" src="./js/billing.js"></script>
+    </body>
+</html>

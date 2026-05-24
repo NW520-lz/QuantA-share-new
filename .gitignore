@@ -1,0 +1,56 @@
+# Environment
+.venv/
+venv/
+env/
+.env
+*.env.local
+*.env.production
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude / AI agent
+.claude/
+.agents/
+.ruff_cache/
+.playwright-mcp/
+.spec-workflow/
+
+# Logs
+*.log
+
+# Database
+*.db
+*.sqlite
+
+# Docker
+docker-compose.override.yml
+
+# Build artifacts
+build_pyinstaller/
+installer_output/
+*.zip
+*.exe
+QuantA_Share.spec
+QuantA_Share.iss
+
+# 反向代理临时文件
+nginx/

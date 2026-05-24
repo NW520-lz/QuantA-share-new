@@ -1,0 +1,981 @@
+<!doctype html>
+<html class="dark" lang="zh-CN">
+    <head>
+        <meta charset="utf-8" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+        <title>QuantA-Share | 持仓风控</title>
+        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            @keyframes pulse-red {
+                0%,
+                100% {
+                    background-color: rgba(147, 0, 10, 0.1);
+                }
+                50% {
+                    background-color: rgba(147, 0, 10, 0.4);
+                }
+            }
+            .animate-risk-alert {
+                animation: pulse-red 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            }
+            .custom-scrollbar::-webkit-scrollbar {
+                width: 4px;
+                height: 4px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-track {
+                background: #131315;
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb {
+                background: #334155;
+                border-radius: 2px;
+            }
+            .material-symbols-outlined {
+                font-variation-settings:
+                    "FILL" 0,
+                    "wght" 400,
+                    "GRAD" 0,
+                    "opsz" 24;
+            }
+        </style>
+        <script id="tailwind-config">
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        colors: {
+                            "primary-container": "#0a192f",
+                            primary: "#b9c7e4",
+                            "error-container": "#93000a",
+                            "on-primary-fixed": "#0d1c32",
+                            "surface-container-lowest": "#0e0e10",
+                            "tertiary-fixed-dim": "#e7bf99",
+                            "inverse-surface": "#e4e2e4",
+                            outline: "#8f9097",
+                            "tertiary-fixed": "#ffdcbd",
+                            "tertiary-container": "#281400",
+                            "inverse-primary": "#515f78",
+                            "on-error-container": "#ffdad6",
+                            "surface-bright": "#39393b",
+                            "surface-tint": "#b9c7e4",
+                            "on-secondary-container": "#bab8b7",
+                            "on-secondary-fixed": "#1c1b1b",
+                            "on-secondary": "#313030",
+                            surface: "#131315",
+                            "surface-variant": "#343536",
+                            "surface-dim": "#131315",
+                            "surface-container": "#1f1f21",
+                            "on-tertiary-fixed-variant": "#5d4124",
+                            "outline-variant": "#44474d",
+                            "surface-container-high": "#2a2a2c",
+                            "inverse-on-surface": "#303032",
+                            error: "#ffb4ab",
+                            "primary-fixed-dim": "#b9c7e4",
+                            "secondary-container": "#4a4949",
+                            "surface-container-low": "#1b1b1d",
+                            "on-tertiary-container": "#9d7b5a",
+                            "on-tertiary": "#432b10",
+                            "surface-container-highest": "#343536",
+                            "on-primary": "#233148",
+                            "secondary-fixed-dim": "#c8c6c5",
+                            "on-tertiary-fixed": "#2b1701",
+                            "on-secondary-fixed-variant": "#474646",
+                            "on-primary-container": "#74829d",
+                            "on-background": "#e4e2e4",
+                            "on-primary-fixed-variant": "#39475f",
+                            "primary-fixed": "#d6e3ff",
+                            "on-error": "#690005",
+                            secondary: "#c8c6c5",
+                            tertiary: "#e7bf99",
+                            "on-surface": "#e4e2e4",
+                            "on-surface-variant": "#c5c6cd",
+                            "secondary-fixed": "#e5e2e1",
+                            background: "#131315",
+                        },
+                        borderRadius: {
+                            DEFAULT: "0.125rem",
+                            lg: "0.25rem",
+                            xl: "0.5rem",
+                            full: "0.75rem",
+                        },
+                        spacing: {
+                            gutter: "1rem",
+                            "container-padding": "1.5rem",
+                            unit: "4px",
+                            "compact-padding": "0.5rem",
+                            "table-row-height": "32px",
+                        },
+                        fontFamily: {
+                            "display-lg": ["Inter"],
+                            "body-md": ["Inter"],
+                            "label-xs": ["JetBrains Mono"],
+                            "data-tabular": ["Inter"],
+                            "headline-md": ["Inter"],
+                        },
+                        fontSize: {
+                            "display-lg": [
+                                "30px",
+                                {
+                                    lineHeight: "38px",
+                                    letterSpacing: "-0.02em",
+                                    fontWeight: "700",
+                                },
+                            ],
+                            "body-md": [
+                                "14px",
+                                { lineHeight: "20px", fontWeight: "400" },
+                            ],
+                            "label-xs": [
+                                "11px",
+                                {
+                                    lineHeight: "14px",
+                                    letterSpacing: "0.05em",
+                                    fontWeight: "500",
+                                },
+                            ],
+                            "data-tabular": [
+                                "13px",
+                                { lineHeight: "16px", fontWeight: "500" },
+                            ],
+                            "headline-md": [
+                                "20px",
+                                {
+                                    lineHeight: "28px",
+                                    letterSpacing: "-0.01em",
+                                    fontWeight: "600",
+                                },
+                            ],
+                        },
+                    },
+                },
+            };
+        </script>
+    </head>
+    <body class="bg-background text-on-surface font-body-md overflow-hidden">
+        <!-- SideNavBar Shell -->
+        <aside
+            class="fixed left-0 top-0 h-full flex flex-col py-4 z-40 bg-surface-container dark:bg-surface-container-low border-r border-outline-variant w-64"
+        >
+            <div class="px-6 mb-8">
+                <h1
+                    class="font-headline-md text-headline-md font-bold text-primary"
+                >
+                    QUANT ENGINE
+                </h1>
+                <p
+                    class="font-label-xs text-label-xs text-on-surface-variant opacity-70"
+                >
+                    Institutional V2.4
+                </p>
+            </div>
+            <nav class="flex-1 space-y-1 px-2">
+                <a
+                    class="flex items-center px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-all duration-200 cursor-pointer active:scale-[0.98]"
+                    href="选股看板.html"
+                >
+                    <span class="material-symbols-outlined mr-3" data-icon="dashboard">dashboard</span>
+                    <span class="font-body-md">选股看板</span>
+                </a>
+                <a
+                    class="flex items-center px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-all duration-200 cursor-pointer active:scale-[0.98]"
+                    href="策略参数.html"
+                >
+                    <span class="material-symbols-outlined mr-3" data-icon="settings_input_component">settings_input_component</span>
+                    <span class="font-body-md">策略参数</span>
+                </a>
+                <a
+                    class="flex items-center px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-all duration-200 cursor-pointer active:scale-[0.98]"
+                    href="AI对话.html"
+                >
+                    <span class="material-symbols-outlined mr-3" data-icon="smart_toy">smart_toy</span>
+                    <span class="font-body-md">AI 对话</span>
+                </a>
+                <div class="flex items-center px-4 py-3 text-primary font-bold border-r-2 border-primary bg-primary-container/10 transition-all duration-200 cursor-pointer active:scale-[0.98]">
+                    <span class="material-symbols-outlined mr-3" data-icon="security" style="font-variation-settings: &quot;FILL&quot; 1">security</span>
+                    <span class="font-body-md">持仓风控</span>
+                </div>
+                <a
+                    class="flex items-center px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-all duration-200 cursor-pointer active:scale-[0.98]"
+                    href="复盘日志.html"
+                >
+                    <span class="material-symbols-outlined mr-3" data-icon="history_edu">history_edu</span>
+                    <span class="font-body-md">复盘日志</span>
+                </a>
+                <a
+                    class="flex items-center px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-all duration-200 cursor-pointer active:scale-[0.98]"
+                    href="系统设置.html"
+                >
+                    <span class="material-symbols-outlined mr-3" data-icon="settings">settings</span>
+                    <span class="font-body-md">系统配置</span>
+                </a>
+            </nav>
+            <div
+                class="px-4 mt-auto space-y-2 border-t border-outline-variant pt-4"
+            >
+                <div
+                    class="flex items-center text-label-xs font-label-xs text-on-surface-variant"
+                >
+                    <span
+                        class="material-symbols-outlined text-[14px] mr-2 text-green-500"
+                        data-icon="sensors"
+                        >sensors</span
+                    >
+                    Connection: <span data-status>Stable</span>
+                </div>
+                <div
+                    class="flex items-center text-label-xs font-label-xs text-on-surface-variant"
+                >
+                    <span
+                        class="material-symbols-outlined text-[14px] mr-2 animate-spin"
+                        data-icon="sync"
+                        >sync</span
+                    >
+                    <span data-sync>Syncing...</span>
+                </div>
+            </div>
+        </aside>
+        <!-- Main Content Area -->
+        <main class="ml-64 flex flex-col h-screen">
+            <!-- TopNavBar -->
+            <header
+                class="flex justify-between items-center w-full px-container-padding h-table-row-height z-50 bg-surface dark:bg-surface border-b border-outline-variant shrink-0"
+            >
+                <div class="flex items-center">
+                    <span
+                        class="font-headline-md text-headline-md font-bold text-primary"
+                        >QuantA-Share</span
+                    >
+                    <div
+                        class="ml-8 px-3 py-1 bg-surface-container-high rounded-lg flex items-center"
+                    >
+                        <span
+                            class="material-symbols-outlined text-on-surface-variant text-sm mr-2"
+                            data-icon="search"
+                            >search</span
+                        >
+                        <input
+                            class="bg-transparent border-none focus:ring-0 text-label-xs w-48 p-0"
+                            placeholder="搜索代码/简称..."
+                            type="text"
+                        />
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button
+                        class="material-symbols-outlined text-primary hover:bg-surface-container-highest p-1 rounded transition-colors"
+                        data-icon="dns"
+                    >
+                        dns
+                    </button>
+                    <button
+                        class="material-symbols-outlined text-primary hover:bg-surface-container-highest p-1 rounded transition-colors relative"
+                        data-icon="notifications"
+                    >
+                        notifications
+                        <span
+                            class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"
+                        ></span>
+                    </button>
+                    <div
+                        class="w-8 h-8 rounded-full bg-primary-container overflow-hidden border border-outline-variant cursor-pointer"
+                        data-action="avatar-menu"
+                        title="退出登录"
+                    >
+                        <img
+                            alt="Professional Trader Avatar"
+                            class="w-full h-full object-cover"
+                            src="./images/avatar.svg"
+                        />
+                    </div>
+                </div>
+            </header>
+            <!-- Scrollable Content -->
+            <div
+                class="flex-1 overflow-y-auto p-gutter custom-scrollbar space-y-gutter"
+            >
+                <!-- Section 1: Top Candidate Cards -->
+                <section>
+                    <div class="flex justify-between items-end mb-4">
+                        <h2
+                            class="font-headline-md text-headline-md text-on-surface flex items-center"
+                        >
+                            <span
+                                class="material-symbols-outlined mr-2 text-primary"
+                                data-icon="bolt"
+                                >bolt</span
+                            >
+                            今日备选标的
+                        </h2>
+                        <span
+                            class="text-label-xs font-label-xs text-on-surface-variant"
+                            id="positions-updated-at"
+                            >更新时间: 09:30:00 CST</span
+                        >
+                    </div>
+                    <div
+                        id="dashboard-candidates"
+                        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4"
+                    >
+                        <!-- Stock Card -->
+                        <div
+                            class="bg-surface-container-low border border-outline-variant p-4 hover:border-primary transition-colors cursor-pointer group relative overflow-hidden"
+                        >
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h3 class="font-bold text-on-surface">
+                                        北方华创
+                                    </h3>
+                                    <p
+                                        class="text-label-xs font-label-xs text-on-surface-variant"
+                                    >
+                                        002371.SZ
+                                    </p>
+                                </div>
+                                <span
+                                    class="text-xs px-2 py-0.5 bg-primary-container text-primary rounded"
+                                    >高胜率</span
+                                >
+                            </div>
+                            <div class="grid grid-cols-2 gap-y-2 mt-4 text-sm">
+                                <div class="text-on-surface-variant">
+                                    买入参考
+                                </div>
+                                <div class="text-right font-data-tabular">
+                                    312.45
+                                </div>
+                                <div class="text-on-surface-variant">
+                                    止损价
+                                </div>
+                                <div
+                                    class="text-right text-error font-data-tabular"
+                                >
+                                    298.50
+                                </div>
+                                <div class="text-on-surface-variant">
+                                    目标止盈
+                                </div>
+                                <div
+                                    class="text-right text-green-400 font-data-tabular"
+                                >
+                                    345.00
+                                </div>
+                                <div class="text-on-surface-variant">
+                                    R 值 (頾险)
+                                </div>
+                                <div class="text-right font-label-xs">1.5%</div>
+                            </div>
+                            <div
+                                class="mt-3 pt-2 border-t border-outline-variant flex justify-between items-center"
+                            >
+                                <span
+                                    class="text-label-xs text-on-surface-variant"
+                                    >流动性: 极佳</span
+                                >
+                                <span
+                                    class="material-symbols-outlined text-primary text-lg"
+                                    data-icon="add_circle"
+                                    >add_circle</span
+                                >
+                            </div>
+                        </div>
+                        <!-- Stock Card 2 -->
+                        <div
+                            class="bg-surface-container-low border border-outline-variant p-4 hover:border-primary transition-colors cursor-pointer group relative overflow-hidden"
+                        >
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h3 class="font-bold text-on-surface">
+                                        赛力斯
+                                    </h3>
+                                    <p
+                                        class="text-label-xs font-label-xs text-on-surface-variant"
+                                    >
+                                        601127.SH
+                                    </p>
+                                </div>
+                                <span
+                                    class="text-xs px-2 py-0.5 bg-tertiary-container text-tertiary rounded"
+                                    >趋势突破</span
+                                >
+                            </div>
+                            <div class="grid grid-cols-2 gap-y-2 mt-4 text-sm">
+                                <div class="text-on-surface-variant">
+                                    买入参考
+                                </div>
+                                <div class="text-right font-data-tabular">
+                                    94.20
+                                </div>
+                                <div class="text-on-surface-variant">
+                                    止损价
+                                </div>
+                                <div
+                                    class="text-right text-error font-data-tabular"
+                                >
+                                    89.50
+                                </div>
+                                <div class="text-on-surface-variant">
+                                    目标止盈
+                                </div>
+                                <div
+                                    class="text-right text-green-400 font-data-tabular"
+                                >
+                                    112.00
+                                </div>
+                                <div class="text-on-surface-variant">
+                                    R 值 (頾险)
+                                </div>
+                                <div class="text-right font-label-xs">2.1%</div>
+                            </div>
+                            <div
+                                class="mt-3 pt-2 border-t border-outline-variant flex justify-between items-center"
+                            >
+                                <span
+                                    class="text-label-xs text-on-surface-variant"
+                                    >波动率: 较高</span
+                                >
+                                <span
+                                    class="material-symbols-outlined text-primary text-lg"
+                                    data-icon="add_circle"
+                                    >add_circle</span
+                                >
+                            </div>
+                        </div>
+                        <!-- Stock Card 3 -->
+                        <div
+                            class="bg-surface-container-low border border-outline-variant p-4 hover:border-primary transition-colors cursor-pointer group relative overflow-hidden"
+                        >
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h3 class="font-bold text-on-surface">
+                                        宁德时代
+                                    </h3>
+                                    <p
+                                        class="text-label-xs font-label-xs text-on-surface-variant"
+                                    >
+                                        300750.SZ
+                                    </p>
+                                </div>
+                                <span
+                                    class="text-xs px-2 py-0.5 bg-surface-container-highest text-on-surface-variant rounded"
+                                    >蓝筹复苏</span
+                                >
+                            </div>
+                            <div class="grid grid-cols-2 gap-y-2 mt-4 text-sm">
+                                <div class="text-on-surface-variant">
+                                    买入参考
+                                </div>
+                                <div class="text-right font-data-tabular">
+                                    195.50
+                                </div>
+                                <div class="text-on-surface-variant">
+                                    止损价
+                                </div>
+                                <div
+                                    class="text-right text-error font-data-tabular"
+                                >
+                                    190.00
+                                </div>
+                                <div class="text-on-surface-variant">
+                                    目标止盈
+                                </div>
+                                <div
+                                    class="text-right text-green-400 font-data-tabular"
+                                >
+                                    218.00
+                                </div>
+                                <div class="text-on-surface-variant">
+                                    R 值 (頾险)
+                                </div>
+                                <div class="text-right font-label-xs">0.8%</div>
+                            </div>
+                            <div
+                                class="mt-3 pt-2 border-t border-outline-variant flex justify-between items-center"
+                            >
+                                <span
+                                    class="text-label-xs text-on-surface-variant"
+                                    >机构关注: 强</span
+                                >
+                                <span
+                                    class="material-symbols-outlined text-primary text-lg"
+                                    data-icon="add_circle"
+                                    >add_circle</span
+                                >
+                            </div>
+                        </div>
+                        <!-- Stock Card 4 -->
+                        <div
+                            class="bg-surface-container-low border border-outline-variant p-4 hover:border-primary transition-colors cursor-pointer group relative overflow-hidden"
+                        >
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h3 class="font-bold text-on-surface">
+                                        药明康德
+                                    </h3>
+                                    <p
+                                        class="text-label-xs font-label-xs text-on-surface-variant"
+                                    >
+                                        603259.SH
+                                    </p>
+                                </div>
+                                <span
+                                    class="text-xs px-2 py-0.5 bg-error-container/20 text-error rounded"
+                                    >底部放量</span
+                                >
+                            </div>
+                            <div class="grid grid-cols-2 gap-y-2 mt-4 text-sm">
+                                <div class="text-on-surface-variant">
+                                    买入参考
+                                </div>
+                                <div class="text-right font-data-tabular">
+                                    55.80
+                                </div>
+                                <div class="text-on-surface-variant">
+                                    止损价
+                                </div>
+                                <div
+                                    class="text-right text-error font-data-tabular"
+                                >
+                                    52.30
+                                </div>
+                                <div class="text-on-surface-variant">
+                                    目标止盈
+                                </div>
+                                <div
+                                    class="text-right text-green-400 font-data-tabular"
+                                >
+                                    64.00
+                                </div>
+                                <div class="text-on-surface-variant">
+                                    R 值 (頾险)
+                                </div>
+                                <div class="text-right font-label-xs">1.2%</div>
+                            </div>
+                            <div
+                                class="mt-3 pt-2 border-t border-outline-variant flex justify-between items-center"
+                            >
+                                <span
+                                    class="text-label-xs text-on-surface-variant"
+                                    >盈亏比: 3.1</span
+                                >
+                                <span
+                                    class="material-symbols-outlined text-primary text-lg"
+                                    data-icon="add_circle"
+                                    >add_circle</span
+                                >
+                            </div>
+                        </div>
+                        <!-- Stock Card 5 -->
+                        <div
+                            class="bg-surface-container-low border border-outline-variant p-4 hover:border-primary transition-colors cursor-pointer group relative overflow-hidden"
+                        >
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h3 class="font-bold text-on-surface">
+                                        中芯国际
+                                    </h3>
+                                    <p
+                                        class="text-label-xs font-label-xs text-on-surface-variant"
+                                    >
+                                        688981.SH
+                                    </p>
+                                </div>
+                                <span
+                                    class="text-xs px-2 py-0.5 bg-primary-container text-primary rounded"
+                                    >半导体核心</span
+                                >
+                            </div>
+                            <div class="grid grid-cols-2 gap-y-2 mt-4 text-sm">
+                                <div class="text-on-surface-variant">
+                                    买入参考
+                                </div>
+                                <div class="text-right font-data-tabular">
+                                    48.90
+                                </div>
+                                <div class="text-on-surface-variant">
+                                    止损价
+                                </div>
+                                <div
+                                    class="text-right text-error font-data-tabular"
+                                >
+                                    46.50
+                                </div>
+                                <div class="text-on-surface-variant">
+                                    目标止盈
+                                </div>
+                                <div
+                                    class="text-right text-green-400 font-data-tabular"
+                                >
+                                    58.00
+                                </div>
+                                <div class="text-on-surface-variant">
+                                    R 值 (頾险)
+                                </div>
+                                <div class="text-right font-label-xs">1.9%</div>
+                            </div>
+                            <div
+                                class="mt-3 pt-2 border-t border-outline-variant flex justify-between items-center"
+                            >
+                                <span
+                                    class="text-label-xs text-on-surface-variant"
+                                    >北向流入: 持续</span
+                                >
+                                <span
+                                    class="material-symbols-outlined text-primary text-lg"
+                                    data-icon="add_circle"
+                                    >add_circle</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- Section 2: Portfolio and Risk -->
+                <div class="grid grid-cols-12 gap-gutter">
+                    <!-- Left: Current Positions Table -->
+                    <section
+                        class="col-span-12 xl:col-span-8 bg-surface-container border border-outline-variant rounded"
+                    >
+                        <div
+                            class="p-4 border-b border-outline-variant flex justify-between items-center"
+                        >
+                            <h2
+                                class="font-headline-md text-headline-md text-on-surface flex items-center"
+                            >
+                                <span
+                                    class="material-symbols-outlined mr-2 text-primary"
+                                    data-icon="account_balance_wallet"
+                                    >account_balance_wallet</span
+                                >
+                                当前持仓实时清单
+                            </h2>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 bg-surface-container-highest text-label-xs rounded border border-outline-variant" data-action="balance-wallet">
+                                账户余额
+                            </button>
+                            <button class="px-3 py-1 bg-surface-container-highest text-label-xs rounded border border-outline-variant" data-action="export-report">
+                                导出日报
+                            </button>
+                            <button class="px-3 py-1 bg-error-container text-on-error-container text-label-xs rounded" data-action="clear-all">
+                                一键清仓 (紧急)
+                            </button>
+                        </div>
+                        </div>
+                        <div class="p-4 border-b border-outline-variant bg-surface-container-low/40">
+                            <div class="grid grid-cols-1 md:grid-cols-6 gap-2 items-end">
+                                <label class="flex flex-col gap-1">
+                                    <span class="text-[11px] text-on-surface-variant">代码</span>
+                                    <input id="pos-symbol" class="bg-surface border border-outline-variant rounded px-2 py-1.5 text-label-xs focus:border-primary focus:ring-0 outline-none" placeholder="sh.600519" type="text"/>
+                                </label>
+                                <label class="flex flex-col gap-1">
+                                    <span class="text-[11px] text-on-surface-variant">名称</span>
+                                    <input id="pos-name" class="bg-surface border border-outline-variant rounded px-2 py-1.5 text-label-xs focus:border-primary focus:ring-0 outline-none" placeholder="贵州茅台" type="text"/>
+                                </label>
+                                <label class="flex flex-col gap-1">
+                                    <span class="text-[11px] text-on-surface-variant">买入股数</span>
+                                    <input id="pos-quantity" class="bg-surface border border-outline-variant rounded px-2 py-1.5 text-label-xs focus:border-primary focus:ring-0 outline-none" min="0" placeholder="100" step="1" type="number"/>
+                                </label>
+                                <label class="flex flex-col gap-1">
+                                    <span class="text-[11px] text-on-surface-variant">买入均价</span>
+                                    <input id="pos-avg-price" class="bg-surface border border-outline-variant rounded px-2 py-1.5 text-label-xs focus:border-primary focus:ring-0 outline-none" min="0" placeholder="1650" step="0.01" type="number"/>
+                                </label>
+                                <label class="flex flex-col gap-1">
+                                    <span class="text-[11px] text-on-surface-variant">最新价(可选)</span>
+                                    <input id="pos-last-price" class="bg-surface border border-outline-variant rounded px-2 py-1.5 text-label-xs focus:border-primary focus:ring-0 outline-none" min="0" placeholder="1712" step="0.01" type="number"/>
+                                </label>
+                                <button id="pos-save-btn" class="h-8 px-3 py-1 bg-primary text-on-primary text-label-xs rounded hover:opacity-90">
+                                    保存持仓
+                                </button>
+                            </div>
+                            <div id="pos-save-msg" class="text-[11px] text-on-surface-variant mt-2"></div>
+                        </div>
+                        <div class="overflow-x-auto custom-scrollbar">
+                            <table class="w-full text-left">
+                                <thead
+                                    class="bg-surface-container-high text-on-surface-variant font-label-xs text-label-xs uppercase"
+                                >
+                                    <tr>
+                                        <th
+                                            class="px-4 h-8 border-b border-outline-variant"
+                                         >
+                                             股票名称
+                                         </th>
+                                         <th
+                                             class="px-4 h-8 border-b border-outline-variant text-right"
+                                         >
+                                            持股数量
+                                        </th>
+                                        <th
+                                            class="px-4 h-8 border-b border-outline-variant text-right"
+                                        >
+                                            持仓均价
+                                        </th>
+                                        <th
+                                            class="px-4 h-8 border-b border-outline-variant text-right"
+                                        >
+                                            买入金额
+                                        </th>
+                                        <th
+                                            class="px-4 h-8 border-b border-outline-variant text-right"
+                                        >
+                                            现价
+                                        </th>
+                                        <th
+                                            class="px-4 h-8 border-b border-outline-variant text-right"
+                                        >
+                                            浮动盈亏
+                                        </th>
+                                        <th
+                                            class="px-4 h-8 border-b border-outline-variant text-right"
+                                        >
+                                            累计盈亏
+                                        </th>
+                                        <th
+                                            class="px-4 h-8 border-b border-outline-variant text-right"
+                                        >
+                                            风险等级
+                                        </th>
+                                        <th
+                                            class="px-4 h-8 border-b border-outline-variant text-center"
+                                        >
+                                            状态
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-sm font-data-tabular" id="positions-table-body">
+                                    <tr class="border-b border-outline-variant">
+                                        <td class="px-4 py-3 text-on-surface-variant" colspan="9">加载中...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                    <!-- Right: Portfolio Distribution & Risk Stats -->
+                    <section class="col-span-12 xl:col-span-4 space-y-gutter">
+                        <!-- Distribution Chart Container -->
+                        <div
+                            class="bg-surface-container border border-outline-variant rounded p-4"
+                        >
+                            <h2
+                                class="font-headline-md text-headline-md text-on-surface mb-4"
+                            >
+                                资产分布
+                            </h2>
+                            <div
+                                class="relative w-full aspect-square flex items-center justify-center"
+                            >
+                                <!-- SVG Pie Mockup -->
+                                <svg
+                                    class="w-48 h-48 transform -rotate-90"
+                                    viewBox="0 0 100 100"
+                                >
+                                    <circle
+                                        cx="50"
+                                        cy="50"
+                                        fill="transparent"
+                                        r="40"
+                                        stroke="#334155"
+                                        stroke-width="20"
+                                    ></circle>
+                                    <circle
+                                        cx="50"
+                                        cy="50"
+                                        fill="transparent"
+                                        r="40"
+                                        stroke="#b9c7e4"
+                                        stroke-dasharray="160 251.2"
+                                        stroke-width="20"
+                                    ></circle>
+                                    <circle
+                                        cx="50"
+                                        cy="50"
+                                        fill="transparent"
+                                        r="40"
+                                        stroke="#e7bf99"
+                                        stroke-dasharray="60 251.2"
+                                        stroke-dashoffset="-160"
+                                        stroke-width="20"
+                                    ></circle>
+                                    <circle
+                                        cx="50"
+                                        cy="50"
+                                        fill="transparent"
+                                        r="40"
+                                        stroke="#93000a"
+                                        stroke-dasharray="31.2 251.2"
+                                        stroke-dashoffset="-220"
+                                        stroke-width="20"
+                                    ></circle>
+                                </svg>
+                                <div class="absolute text-center">
+                                    <div
+                                        class="text-label-xs text-on-surface-variant"
+                                    >
+                                        当前仓位
+                                    </div>
+                                    <div
+                                        id="total-position-pct"
+                                        class="font-headline-md text-headline-md text-primary"
+                                    >
+                                        74.2%
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="allocation-list" class="mt-6 grid grid-cols-2 gap-4 text-xs">
+                                <div class="flex items-center">
+                                    <span
+                                        class="w-3 h-3 bg-primary mr-2"
+                                    ></span>
+                                    <span class="text-on-surface-variant flex-1"
+                                        >科技核心</span
+                                    >
+                                    <span class="font-data-tabular">45%</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span
+                                        class="w-3 h-3 bg-tertiary mr-2"
+                                    ></span>
+                                    <span class="text-on-surface-variant flex-1"
+                                        >价值消费</span
+                                    >
+                                    <span class="font-data-tabular">22%</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="w-3 h-3 bg-error mr-2"></span>
+                                    <span class="text-on-surface-variant flex-1"
+                                        >能源材料</span
+                                    >
+                                    <span class="font-data-tabular">7.2%</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span
+                                        class="w-3 h-3 bg-outline-variant mr-2"
+                                    ></span>
+                                    <span class="text-on-surface-variant flex-1"
+                                        >空仓现金</span
+                                    >
+                                    <span class="font-data-tabular">25.8%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Risk Indicator Stats -->
+                        <div
+                            class="bg-surface-container border border-outline-variant rounded p-4"
+                        >
+                            <h2
+                                class="font-headline-md text-headline-md text-on-surface mb-4"
+                            >
+                                风险敞口监控
+                            </h2>
+                            <div class="space-y-4">
+                                <div>
+                                    <div
+                                        class="flex justify-between text-xs mb-1"
+                                    >
+                                        <span class="text-on-surface-variant"
+                                            >单一标的最大头寸</span
+                                        >
+                                        <span id="risk-max-single" class="text-primary font-bold"
+                                            >14.2%</span
+                                        >
+                                    </div>
+                                    <div
+                                        class="h-1 w-full bg-surface-container-high rounded-full overflow-hidden"
+                                    >
+                                        <div
+                                            id="risk-max-single-bar"
+                                            class="h-full bg-primary"
+                                            style="width: 71%"
+                                        ></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div
+                                        class="flex justify-between text-xs mb-1"
+                                    >
+                                        <span class="text-on-surface-variant"
+                                            >Beta 灵敏度</span
+                                        >
+                                        <span id="risk-beta" class="text-tertiary font-bold"
+                                            >1.12</span
+                                        >
+                                    </div>
+                                    <div
+                                        class="h-1 w-full bg-surface-container-high rounded-full overflow-hidden"
+                                    >
+                                        <div
+                                            id="risk-beta-bar"
+                                            class="h-full bg-tertiary"
+                                            style="width: 56%"
+                                        ></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div
+                                        class="flex justify-between text-xs mb-1"
+                                    >
+                                        <span class="text-on-surface-variant"
+                                            >组合最大回撤 (5% 报警)</span
+                                        >
+                                        <span id="risk-drawdown" class="text-error font-bold"
+                                            >3.41%</span
+                                        >
+                                    </div>
+                                    <div
+                                        class="h-1 w-full bg-surface-container-high rounded-full overflow-hidden"
+                                    >
+                                        <div
+                                            id="risk-drawdown-bar"
+                                            class="h-full bg-error"
+                                            style="width: 68%"
+                                        ></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                id="risk-hint"
+                                class="mt-6 p-3 bg-surface-container-lowest border-l-2 border-primary italic text-[11px] text-on-surface-variant"
+                            >
+                                "目前的风险敞口在预设范围内，但工业富联触及警戒线，建议优先减仓或设置自动化条件单。"
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+        <!-- FAB for Quick Order -->
+        <button
+            class="fixed bottom-8 right-8 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center hover:scale-105 active:scale-95 transition-transform z-50"
+        >
+            <span
+                class="material-symbols-outlined"
+                data-icon="add_chart"
+                style="font-variation-settings: &quot;FILL&quot; 1"
+                >add_chart</span
+            >
+        </button>
+        <script>
+            // Optional micro-interaction: update timestamp
+            function updateTime() {
+                const now = new Date();
+                const timeStr = now.toTimeString().split(" ")[0] + " CST";
+                document.querySelectorAll(".text-label-xs").forEach((el) => {
+                    if (el.textContent.includes("Update:")) {
+                        el.textContent = "Update: " + timeStr;
+                    }
+                });
+            }
+            setInterval(updateTime, 1000);
+        </script>
+        <script type="module" src="./js/portfolio.js"></script>
+    </body>
+</html>

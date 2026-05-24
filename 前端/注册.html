@@ -1,0 +1,40 @@
+<!doctype html>
+<html class="dark" lang="zh-CN">
+    <head>
+        <meta charset="utf-8" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+        <title>QuantA Share | 邮箱注册</title>
+        <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            body {
+                background: #0e0e10;
+                color: #e4e2e4;
+            }
+        </style>
+    </head>
+    <body class="min-h-screen flex items-center justify-center p-4">
+        <main class="w-full max-w-md border border-zinc-700 rounded-lg bg-zinc-900 p-6 space-y-4">
+            <h1 class="text-xl font-semibold text-blue-300">邮箱注册</h1>
+            <p class="text-xs text-zinc-400">输入邮箱获取验证码，完成注册后自动跳转看板。</p>
+            <form id="register-form" class="space-y-3" onsubmit="return false;">
+                <input id="reg-email" type="email" class="w-full rounded bg-zinc-800 border-zinc-700" placeholder="邮箱地址" />
+                <div class="flex gap-2">
+                    <input id="reg-code" type="text" class="flex-1 rounded bg-zinc-800 border-zinc-700" placeholder="验证码" />
+                    <button id="send-code-btn" type="button" class="px-3 rounded bg-zinc-700 hover:bg-zinc-600">发送验证码</button>
+                </div>
+                <input id="reg-uid" type="text" class="w-full rounded bg-zinc-800 border-zinc-700" placeholder="用户名(可选)" />
+                <input id="reg-password" type="password" class="w-full rounded bg-zinc-800 border-zinc-700" placeholder="密码(至少6位)" />
+                <p id="register-error" class="text-xs text-red-300 hidden"></p>
+                <button id="register-submit" class="w-full rounded bg-green-500 py-2 text-black font-semibold hover:bg-green-400">
+                    注册并登录
+                </button>
+                <a href="登录.html" class="block text-center text-xs text-blue-300 hover:underline">返回登录</a>
+            </form>
+        </main>
+        <script type="module" src="./js/register.js?v=20260525-1"></script>
+    </body>
+</html>

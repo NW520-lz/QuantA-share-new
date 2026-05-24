@@ -1,0 +1,462 @@
+<!DOCTYPE html><html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-container": "#0a192f",
+                        "primary": "#b9c7e4",
+                        "error-container": "#93000a",
+                        "on-primary-fixed": "#0d1c32",
+                        "surface-container-lowest": "#0e0e10",
+                        "tertiary-fixed-dim": "#e7bf99",
+                        "inverse-surface": "#e4e2e4",
+                        "outline": "#8f9097",
+                        "tertiary-fixed": "#ffdcbd",
+                        "tertiary-container": "#281400",
+                        "inverse-primary": "#515f78",
+                        "on-error-container": "#ffdad6",
+                        "surface-bright": "#39393b",
+                        "surface-tint": "#b9c7e4",
+                        "on-secondary-container": "#bab8b7",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "on-secondary": "#313030",
+                        "surface": "#131315",
+                        "surface-variant": "#343536",
+                        "surface-dim": "#131315",
+                        "surface-container": "#1f1f21",
+                        "on-tertiary-fixed-variant": "#5d4124",
+                        "outline-variant": "#44474d",
+                        "surface-container-high": "#2a2a2c",
+                        "inverse-on-surface": "#303032",
+                        "error": "#ffb4ab",
+                        "primary-fixed-dim": "#b9c7e4",
+                        "secondary-container": "#4a4949",
+                        "surface-container-low": "#1b1b1d",
+                        "on-tertiary-container": "#9d7b5a",
+                        "on-tertiary": "#432b10",
+                        "surface-container-highest": "#343536",
+                        "on-primary": "#233148",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "on-tertiary-fixed": "#2b1701",
+                        "on-secondary-fixed-variant": "#474646",
+                        "on-primary-container": "#74829d",
+                        "on-background": "#e4e2e4",
+                        "on-primary-fixed-variant": "#39475f",
+                        "primary-fixed": "#d6e3ff",
+                        "on-error": "#690005",
+                        "secondary": "#c8c6c5",
+                        "tertiary": "#e7bf99",
+                        "on-surface": "#e4e2e4",
+                        "on-surface-variant": "#c5c6cd",
+                        "secondary-fixed": "#e5e2e1",
+                        "background": "#131315"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "1rem",
+                        "container-padding": "1.5rem",
+                        "unit": "4px",
+                        "compact-padding": "0.5rem",
+                        "table-row-height": "32px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-xs": ["JetBrains Mono"],
+                        "data-tabular": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-xs": ["11px", {"lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "data-tabular": ["13px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        input[type="range"]::-webkit-slider-runnable-track {
+            background: #334155;
+            height: 4px;
+            border-radius: 2px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 12px;
+            width: 12px;
+            border-radius: 50%;
+            background: #b9c7e4;
+            margin-top: -4px;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(185, 199, 228, 0.4);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-hidden selection:bg-primary/30">
+<!-- TopNavBar -->
+<header class="fixed top-0 left-0 w-full flex justify-between items-center px-container-padding h-table-row-height z-50 bg-surface border-b border-outline-variant">
+<div class="flex items-center gap-4">
+<span class="font-headline-md text-headline-md font-bold text-primary">QuantA-Share</span>
+<div class="h-4 w-[1px] bg-outline-variant"></div>
+<div class="flex items-center gap-2">
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">Market Sentiment:</span>
+<span class="font-label-xs text-label-xs text-emerald-400" id="strategy-sentiment-text">看多 68%</span>
+<div class="w-16 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-emerald-400" id="strategy-sentiment-bar" style="width: 68%"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex gap-3">
+<button class="material-symbols-outlined text-primary hover:bg-surface-container-highest transition-colors p-1 rounded">dns</button>
+<button class="material-symbols-outlined text-primary hover:bg-surface-container-highest transition-colors p-1 rounded">notifications</button>
+</div>
+<img alt="Professional Trader Avatar" class="w-6 h-6 rounded-full border border-outline-variant" src="./images/avatar.svg">
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-64 flex flex-col py-4 z-40 bg-surface-container border-r border-outline-variant pt-12">
+<div class="px-6 mb-8 mt-2">
+<div class="font-headline-md text-headline-md font-bold text-primary">QUANT ENGINE</div>
+<div class="font-label-xs text-label-xs text-on-surface-variant">Institutional V2.4</div>
+</div>
+<nav class="flex-1 flex flex-col">
+<!-- Navigation Mapping: "策略参数" is Active -->
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-all duration-200 cursor-pointer active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md">选股看板</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-primary font-bold border-r-2 border-primary bg-primary-container/10 transition-all duration-200 cursor-pointer active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">settings_input_component</span>
+<span class="font-body-md">策略参数</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-all duration-200 cursor-pointer active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-body-md">AI 对话</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-all duration-200 cursor-pointer active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">security</span>
+<span class="font-body-md">持仓风控</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-all duration-200 cursor-pointer active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">history_edu</span>
+<span class="font-body-md">复盘日志</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-all duration-200 cursor-pointer active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md">系统配置</span>
+</a>
+</nav>
+<div class="px-6 pt-4 border-t border-outline-variant space-y-2">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">sensors</span>
+<span class="font-label-xs text-label-xs">Connection: <span data-status>Stable</span></span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">sync</span>
+<span class="font-label-xs text-label-xs" data-sync>Syncing...</span>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="ml-64 pt-8 h-screen overflow-hidden flex flex-col">
+<div class="flex-1 overflow-y-auto p-container-padding custom-scrollbar">
+<!-- Page Header -->
+<div class="mb-8 mt-4 flex justify-between items-end">
+<div>
+<h1 class="font-display-lg text-display-lg text-primary">策略参数配置</h1>
+<p class="font-body-md text-on-surface-variant mt-2">基于 A 股高频因子及技术形态的精密过滤引擎</p>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-2 bg-primary text-on-primary-fixed rounded flex items-center gap-2 font-bold hover:brightness-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[18px]">save</span>
+                        保存并下发
+                    </button>
+<button class="px-4 py-2 border border-outline-variant text-on-surface rounded hover:bg-surface-container-highest transition-colors">
+                        重置默认
+                    </button>
+</div>
+</div>
+<!-- Template Switcher -->
+<section class="grid grid-cols-2 gap-gutter mb-8">
+<button class="relative group p-6 rounded-lg bg-primary-container border-2 border-primary overflow-hidden transition-all hover:bg-primary-container/80">
+<div class="relative z-10 flex flex-col items-start gap-2">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined">bolt</span>
+<span class="font-headline-md text-headline-md">短线模式</span>
+</div>
+<p class="text-on-primary-container text-left text-sm">追求极致周转，主要监控量比放大、打板逻辑、分时异动。持仓期 1-3 天。</p>
+</div>
+<div class="absolute right-[-20px] bottom-[-20px] opacity-10 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[120px]">trending_up</span>
+</div>
+</button>
+<button class="relative group p-6 rounded-lg bg-surface-container border border-outline-variant overflow-hidden transition-all hover:bg-surface-container-highest">
+<div class="relative z-10 flex flex-col items-start gap-2">
+<div class="flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined">timeline</span>
+<span class="font-headline-md text-headline-md">波段模式</span>
+</div>
+<p class="text-on-surface-variant text-left text-sm">基于趋势回归，寻找 R 值极值点与形态反转。风控权重较高，持仓期 5-15 天。</p>
+</div>
+<div class="absolute right-[-20px] bottom-[-20px] opacity-10 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[120px]">show_chart</span>
+</div>
+</button>
+</section>
+<!-- Settings Grid -->
+<div class="grid grid-cols-12 gap-gutter items-start">
+<!-- Threshold Regulation Card -->
+<div class="col-span-8 bg-surface-container rounded-lg p-6 border border-outline-variant">
+<div class="flex items-center gap-2 mb-6 text-primary">
+<span class="material-symbols-outlined">tune</span>
+<h2 class="font-headline-md text-headline-md uppercase tracking-wider">阈值调节</h2>
+</div>
+<div class="space-y-8">
+<!-- Volume Ratio Slider -->
+<div class="grid grid-cols-12 items-center gap-4">
+<div class="col-span-3">
+<label class="text-on-surface font-medium">量比下限</label>
+<p class="text-label-xs text-on-surface-variant mt-1">昨日均量倍数</p>
+</div>
+<div class="col-span-7">
+<input class="w-full accent-primary" max="10" min="0.5" step="0.1" type="range" value="1.8">
+<div class="flex justify-between mt-2 text-[10px] text-on-surface-variant font-label-xs uppercase">
+<span>0.5 最小值</span>
+<span>5.0 中间值</span>
+<span>10.0 最大值</span>
+</div>
+</div>
+<div class="col-span-2">
+<input class="w-full bg-surface-container-lowest border border-outline-variant text-primary rounded px-3 py-1 font-label-xs text-center focus:border-primary outline-none" step="0.1" type="number" value="1.8">
+</div>
+</div>
+<!-- R Value Slider -->
+<div class="grid grid-cols-12 items-center gap-4">
+<div class="col-span-3">
+<label class="text-on-surface font-medium">R 值下限</label>
+<p class="text-label-xs text-on-surface-variant mt-1">盈亏比期望阈值</p>
+</div>
+<div class="col-span-7">
+<input class="w-full accent-primary" max="5" min="1" step="0.5" type="range" value="2.5">
+<div class="flex justify-between mt-2 text-[10px] text-on-surface-variant font-label-xs uppercase">
+<span>1.0 保守</span>
+<span>3.0 目标</span>
+<span>5.0 激进</span>
+</div>
+</div>
+<div class="col-span-2">
+<input class="w-full bg-surface-container-lowest border border-outline-variant text-primary rounded px-3 py-1 font-label-xs text-center focus:border-primary outline-none" step="0.5" type="number" value="2.5">
+</div>
+</div>
+<!-- Risk Limit Slider -->
+<div class="grid grid-cols-12 items-center gap-4">
+<div class="col-span-3">
+<label class="text-on-surface font-medium">风险度上限</label>
+<p class="text-label-xs text-on-surface-variant mt-1">单票敞口风险系数</p>
+</div>
+<div class="col-span-7">
+<input class="w-full accent-error" max="15" min="1" step="0.1" type="range" value="5.0">
+<div class="flex justify-between mt-2 text-[10px] text-on-surface-variant font-label-xs uppercase">
+<span>1% 低风险</span>
+<span>8% 警告</span>
+<span>15% 极高风险</span>
+</div>
+</div>
+<div class="col-span-2">
+<input class="w-full bg-surface-container-lowest border border-outline-variant text-error rounded px-3 py-1 font-label-xs text-center focus:border-error outline-none" step="0.1" type="number" value="5.0">
+</div>
+</div>
+<!-- High Open Limit -->
+<div class="grid grid-cols-12 items-center gap-4">
+<div class="col-span-3">
+<label class="text-on-surface font-medium">高开禁入比例</label>
+<p class="text-label-xs text-on-surface-variant mt-1">防止开盘追高回撤</p>
+</div>
+<div class="col-span-7">
+<input class="w-full accent-primary" max="9" min="1" step="0.1" type="range" value="4.5">
+<div class="flex justify-between mt-2 text-[10px] text-on-surface-variant font-label-xs uppercase">
+<span>1%</span>
+<span>5%</span>
+<span>9%</span>
+</div>
+</div>
+<div class="col-span-2">
+<input class="w-full bg-surface-container-lowest border border-outline-variant text-primary rounded px-3 py-1 font-label-xs text-center focus:border-primary outline-none" step="0.1" type="number" value="4.5">
+</div>
+</div>
+<!-- ATR Stop Loss -->
+<div class="grid grid-cols-12 items-center gap-4">
+<div class="col-span-3">
+<label class="text-on-surface font-medium">ATR 止损倍数</label>
+<p class="text-label-xs text-on-surface-variant mt-1">动态波动率调控</p>
+</div>
+<div class="col-span-7">
+<input class="w-full accent-primary" max="4.0" min="1.0" step="0.2" type="range" value="2.2">
+<div class="flex justify-between mt-2 text-[10px] text-on-surface-variant font-label-xs uppercase">
+<span>1.0 收紧</span>
+<span>2.5 标准</span>
+<span>4.0 宽松</span>
+</div>
+</div>
+<div class="col-span-2">
+<input class="w-full bg-surface-container-lowest border border-outline-variant text-primary rounded px-3 py-1 font-label-xs text-center focus:border-primary outline-none" step="0.2" type="number" value="2.2">
+</div>
+</div>
+</div>
+</div>
+<!-- Filter Controls Card -->
+<div class="col-span-4 space-y-gutter">
+<div class="bg-surface-container rounded-lg p-6 border border-outline-variant">
+<div class="flex items-center gap-2 mb-6 text-primary">
+<span class="material-symbols-outlined">filter_alt</span>
+<h2 class="font-headline-md text-headline-md uppercase tracking-wider">过滤开关</h2>
+</div>
+<div class="space-y-4">
+<!-- Switch 1 -->
+<div class="flex items-center justify-between p-3 rounded bg-surface-container-lowest border border-outline-variant/30">
+<div class="flex flex-col">
+<span class="text-on-surface font-medium">剔除 ST 股</span>
+<span class="text-label-xs text-on-surface-variant">屏蔽所有风险警示股票</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox">
+<div class="w-10 h-5 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Switch 2 -->
+<div class="flex items-center justify-between p-3 rounded bg-surface-container-lowest border border-outline-variant/30">
+<div class="flex flex-col">
+<span class="text-on-surface font-medium">剔除新股</span>
+<span class="text-label-xs text-on-surface-variant">上市 30 天内不纳入池</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox">
+<div class="w-10 h-5 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Switch 3 -->
+<div class="flex items-center justify-between p-3 rounded bg-surface-container-lowest border border-outline-variant/30">
+<div class="flex flex-col">
+<span class="text-on-surface font-medium">剔除停牌股</span>
+<span class="text-label-xs text-on-surface-variant">实时同步交易所公告</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox">
+<div class="w-10 h-5 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</div>
+<!-- Sector Exclusion Card (Contextual Addition) -->
+<div class="bg-surface-container rounded-lg p-6 border border-outline-variant">
+<div class="flex items-center gap-2 mb-4 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">block</span>
+<span class="font-label-xs uppercase">行业规避</span>
+</div>
+<div class="flex flex-wrap gap-2" id="industry-exclusion-list">
+<span class="text-label-xs text-on-surface-variant">加载中...</span>
+</div>
+<div class="mt-3 flex items-center gap-2">
+<input id="industry-exclusion-input" class="w-56 bg-surface-container-highest border border-outline-variant rounded px-2 py-1 text-label-xs focus:border-primary focus:ring-0 outline-none" placeholder="输入行业，例如：游戏" type="text"/>
+<button id="industry-exclusion-add-btn" class="px-2 py-1 rounded-sm bg-primary-container text-primary text-label-xs border border-primary/30 hover:bg-primary/10">
+                                + 添加行业
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Information Footer Section -->
+<div class="mt-8 mb-4 grid grid-cols-4 gap-gutter text-on-surface-variant">
+<div class="bg-surface-container p-4 rounded-lg border border-outline-variant/30 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[32px]">query_stats</span>
+<div>
+<div class="text-xs uppercase">预计日均交易笔数</div>
+<div class="font-data-tabular text-headline-md text-on-surface" id="metric-daily-trades">--</div>
+</div>
+</div>
+<div class="bg-surface-container p-4 rounded-lg border border-outline-variant/30 flex items-center gap-3">
+<span class="material-symbols-outlined text-emerald-400 text-[32px]" id="metric-bullish">--</span>
+<div>
+<div class="text-xs uppercase">历史回测胜率</div>
+<div class="font-data-tabular text-headline-md text-on-surface" id="metric-history-win-rate">--</div>
+</div>
+</div>
+<div class="bg-surface-container p-4 rounded-lg border border-outline-variant/30 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[32px]">speed</span>
+<div>
+<div class="text-xs uppercase">撮合引擎延迟</div>
+<div class="font-data-tabular text-headline-md text-on-surface" id="metric-engine-latency">--</div>
+</div>
+</div>
+<div class="bg-surface-container p-4 rounded-lg border border-outline-variant/30 flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary text-[32px]">inventory_2</span>
+<div>
+<div class="text-xs uppercase">当前股票池样本数</div>
+<div class="font-data-tabular text-headline-md text-on-surface" id="metric-pool-count">--</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Scripts for micro-interactions -->
+<script>
+        // Simple slider-input synchronization
+        document.querySelectorAll('input[type="range"]').forEach(slider => {
+            const input = slider.closest('.grid').querySelector('input[type="number"]');
+            slider.addEventListener('input', (e) => {
+                input.value = e.target.value;
+            });
+            input.addEventListener('input', (e) => {
+                slider.value = e.target.value;
+            });
+        });
+
+        // Template toggle effect
+        const templates = document.querySelectorAll('section button');
+        templates.forEach(btn => {
+            btn.addEventListener('click', () => {
+                templates.forEach(b => {
+                    b.classList.remove('bg-primary-container', 'border-primary');
+                    b.classList.add('bg-surface-container', 'border-outline-variant');
+                    b.querySelector('.material-symbols-outlined').classList.remove('text-primary');
+                    b.querySelector('.material-symbols-outlined').classList.add('text-on-surface');
+                });
+                btn.classList.add('bg-primary-container', 'border-primary');
+                btn.classList.remove('bg-surface-container', 'border-outline-variant');
+                btn.querySelector('.material-symbols-outlined').classList.add('text-primary');
+                btn.querySelector('.material-symbols-outlined').classList.remove('text-on-surface');
+            });
+        });
+    </script>
+</body><script type="module" src="./js/strategy-params.js"></script></html>

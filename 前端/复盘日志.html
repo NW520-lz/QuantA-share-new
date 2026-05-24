@@ -1,0 +1,307 @@
+<!doctype html>
+<html class="dark" lang="zh-CN">
+    <head>
+        <meta charset="utf-8" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+        <style>
+            .material-symbols-outlined { font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24; }
+            ::-webkit-scrollbar { width: 4px; height: 4px; }
+            ::-webkit-scrollbar-track { background: transparent; }
+            ::-webkit-scrollbar-thumb { background: #44474d; border-radius: 2px; }
+            ::-webkit-scrollbar-thumb:hover { background: #8f9097; }
+            .heat-up { color: #f87171; }
+            .heat-down { color: #4ade80; }
+            .win-bar-green { background: linear-gradient(90deg, #22c55e, #16a34a); }
+            .win-bar-red { background: linear-gradient(90deg, #ef4444, #dc2626); }
+            @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+            .animate-spin-slow { animation: spin-slow 1.5s linear infinite; }
+            .animate-pulse-slow { animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        </style>
+        <script id="tailwind-config">
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        colors: {
+                            "primary-container": "#0a192f", primary: "#b9c7e4",
+                            "error-container": "#93000a", "on-primary-fixed": "#0d1c32",
+                            "surface-container-lowest": "#0e0e10", "tertiary-fixed-dim": "#e7bf99",
+                            "inverse-surface": "#e4e2e4", outline: "#8f9097",
+                            "tertiary-fixed": "#ffdcbd", "tertiary-container": "#281400",
+                            "inverse-primary": "#515f78", "on-error-container": "#ffdad6",
+                            "surface-bright": "#39393b", "surface-tint": "#b9c7e4",
+                            "on-secondary-container": "#bab8b7", "on-secondary-fixed": "#1c1b1b",
+                            "on-secondary": "#313030", surface: "#131315",
+                            "surface-variant": "#343536", "surface-dim": "#131315",
+                            "surface-container": "#1f1f21", "on-tertiary-fixed-variant": "#5d4124",
+                            "outline-variant": "#44474d", "surface-container-high": "#2a2a2c",
+                            "inverse-on-surface": "#303032", error: "#ffb4ab",
+                            "primary-fixed-dim": "#b9c7e4", "secondary-container": "#4a4949",
+                            "surface-container-low": "#1b1b1d", "on-tertiary-container": "#9d7b5a",
+                            "on-tertiary": "#432b10", "surface-container-highest": "#343536",
+                            background: "#131315", "on-surface": "#e4e2e4",
+                        },
+                        fontFamily: {
+                            "display-lg": ["Inter"], "body-md": ["Inter"],
+                            "label-xs": ["JetBrains Mono"], "data-tabular": ["Inter"],
+                            "headline-md": ["Inter"],
+                        },
+                    },
+                },
+            };
+        </script>
+    </head>
+    <body class="bg-background text-on-surface font-body-md overflow-hidden">
+        <aside class="fixed left-0 top-0 h-full flex flex-col py-4 z-40 bg-surface-container dark:bg-surface-container-low border-r border-outline-variant w-64">
+            <div class="px-6 mb-8">
+                <h1 class="font-headline-md text-headline-md font-bold text-primary">QUANT ENGINE</h1>
+                <p class="font-label-xs text-label-xs text-on-primary-container tracking-wider">Institutional V2.4</p>
+            </div>
+            <nav class="flex-grow">
+                <div class="flex flex-col gap-1">
+                    <a class="flex items-center px-6 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-all duration-200 cursor-pointer" href="选股看板.html">
+                        <span class="material-symbols-outlined mr-3">dashboard</span>
+                        <span class="font-body-md">选股看板</span>
+                    </a>
+                    <a class="flex items-center px-6 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-all duration-200 cursor-pointer" href="策略参数.html">
+                        <span class="material-symbols-outlined mr-3">settings_input_component</span>
+                        <span class="font-body-md">策略参数</span>
+                    </a>
+                    <a class="flex items-center px-6 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-all duration-200 cursor-pointer" href="AI对话.html">
+                        <span class="material-symbols-outlined mr-3">smart_toy</span>
+                        <span class="font-body-md">AI 对话</span>
+                    </a>
+                    <a class="flex items-center px-6 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-all duration-200 cursor-pointer" href="持仓风险.html">
+                        <span class="material-symbols-outlined mr-3">security</span>
+                        <span class="font-body-md">持仓风控</span>
+                    </a>
+                    <a class="flex items-center px-6 py-3 text-primary font-bold border-r-2 border-primary bg-primary-container/10 transition-all duration-200 cursor-pointer" href="复盘日志.html">
+                        <span class="material-symbols-outlined mr-3">history_edu</span>
+                        <span class="font-body-md">复盘日志</span>
+                    </a>
+                    <a class="flex items-center px-6 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-all duration-200 cursor-pointer" href="系统设置.html">
+                        <span class="material-symbols-outlined mr-3">settings</span>
+                        <span class="font-body-md">系统配置</span>
+                    </a>
+                </div>
+            </nav>
+            <div class="px-6 pt-4 border-t border-outline-variant space-y-2">
+                <div class="flex items-center gap-2 text-on-surface-variant"><span class="material-symbols-outlined text-[14px]">sensors</span><span class="font-label-xs">Status: <span data-status>Stable</span></span></div>
+                <div class="flex items-center gap-2 text-on-surface-variant"><span class="material-symbols-outlined text-[14px]">sync</span><span class="font-label-xs" data-sync>Ready</span></div>
+            </div>
+        </aside>
+        <header class="fixed top-0 left-64 right-0 flex justify-between items-center px-container-padding z-50 bg-surface dark:bg-surface border-b border-outline-variant h-[56px]">
+            <div class="flex items-center gap-4">
+                <span class="font-headline-md text-headline-md font-bold text-primary">QuantA-Share</span>
+                <div class="h-4 w-[1px] bg-outline-variant"></div>
+                <span class="font-label-xs text-on-surface-variant">批量回测 / 复盘分析</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-highest p-1.5 rounded transition-colors">dns</button>
+                <button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-highest p-1.5 rounded transition-colors relative">notifications<span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span></button>
+                <div class="flex items-center gap-3 ml-2 pl-4 border-l border-outline-variant">
+                    <span class="font-label-xs text-on-surface text-right">Trader<br/><span class="text-on-surface-variant font-normal">Quant System</span></span>
+                    <div class="w-8 h-8 rounded-lg overflow-hidden bg-primary-container border border-outline-variant cursor-pointer" data-action="avatar-menu" title="账号"><img alt="Avatar" class="w-full h-full object-cover" src="./images/avatar.svg"></div>
+                </div>
+            </div>
+        </header>
+        <main class="ml-64 mt-[56px] h-[calc(100vh-56px)] overflow-y-auto p-gutter bg-surface-container-lowest">
+            <div class="max-w-[1600px] mx-auto space-y-gutter">
+                <!-- ==================== Batch Backtest Section ==================== -->
+                <section class="bg-surface-container p-6 border border-primary/20 rounded-lg" id="backtest-section">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center border border-primary/30">
+                            <span class="material-symbols-outlined text-primary" style="font-variation-settings:'FILL' 1">auto_awesome</span>
+                        </div>
+                        <div>
+                            <h2 class="font-headline-md text-headline-md text-on-surface">多标的批量回测</h2>
+                            <p class="text-label-xs text-on-surface-variant mt-0.5">选多个标的 → 一键回测 → 总胜率统计</p>
+                        </div>
+                    </div>
+                    <!-- Scan Mode Toggle -->
+                    <div class="flex items-center gap-4 mb-4">
+                        <button id="bt-mode-manual" class="bg-primary/20 text-primary px-4 py-1.5 rounded font-label-xs border border-primary/30">手动输入标的</button>
+                        <button id="bt-mode-scan" class="bg-surface-container text-on-surface-variant px-4 py-1.5 rounded font-label-xs border border-outline-variant hover:border-primary/50">全A股扫描</button>
+                        <span class="text-[10px] text-on-surface-variant" id="bt-mode-hint">按逗号输入多个代码</span>
+                    </div>
+                    <!-- Symbol Input (manual mode) -->
+                    <div class="mb-4" id="bt-symbols-container">
+                        <label class="block font-label-xs text-on-surface-variant mb-1.5">股票代码（逗号分隔，支持 sh/sz/bj 格式）</label>
+                        <input id="bt-symbols" class="w-full bg-surface border border-outline-variant rounded px-3 py-2 text-body-md text-on-surface placeholder-on-surface-variant focus:border-primary focus:ring-0 outline-none font-data-tabular" placeholder="sh.600519, sz.000858, sz.300750, sh.601318, sz.000001" type="text" value="sh.600519, sz.000858, sz.300750, sh.601318, sz.000001" />
+                        <p class="text-[10px] text-on-surface-variant mt-1" id="bt-symbol-count">当前 5 个标的</p>
+                    </div>
+                    <!-- Max symbols (scan mode, hidden by default) -->
+                    <div class="mb-4 hidden" id="bt-max-container">
+                        <label class="block font-label-xs text-on-surface-variant mb-1.5">扫描数量上限（全A股约5000+只，建议先小批量测试）</label>
+                        <input id="bt-max" class="w-48 bg-surface border border-outline-variant rounded px-2 py-1.5 text-body-md text-on-surface focus:border-primary outline-none" type="number" value="50" min="5" max="5000" />
+                    </div>
+                    <!-- Date + Params Row -->
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
+                        <div>
+                            <label class="block font-label-xs text-on-surface-variant mb-1">开始日期</label>
+                            <input id="bt-start" class="w-full bg-surface border border-outline-variant rounded px-2 py-1.5 text-body-md text-on-surface focus:border-primary outline-none" type="date" value="2024-01-01" />
+                        </div>
+                        <div>
+                            <label class="block font-label-xs text-on-surface-variant mb-1">结束日期</label>
+                            <input id="bt-end" class="w-full bg-surface border border-outline-variant rounded px-2 py-1.5 text-body-md text-on-surface focus:border-primary outline-none" type="date" value="2026-05-20" />
+                        </div>
+                        <div>
+                            <label class="block font-label-xs text-on-surface-variant mb-1">回看天数</label>
+                            <input id="bt-lookback" class="w-full bg-surface border border-outline-variant rounded px-2 py-1.5 text-body-md text-on-surface focus:border-primary outline-none" type="number" value="60" min="20" max="200" />
+                        </div>
+                        <div>
+                            <label class="block font-label-xs text-on-surface-variant mb-1">持仓天数</label>
+                            <input id="bt-hold" class="w-full bg-surface border border-outline-variant rounded px-2 py-1.5 text-body-md text-on-surface focus:border-primary outline-none" type="number" value="10" min="3" max="60" />
+                        </div>
+                        <div>
+                            <label class="block font-label-xs text-on-surface-variant mb-1">止损 %</label>
+                            <input id="bt-sl" class="w-full bg-surface border border-outline-variant rounded px-2 py-1.5 text-body-md text-on-surface focus:border-primary outline-none" type="number" value="5" min="1" max="20" step="0.5" />
+                        </div>
+                        <div>
+                            <label class="block font-label-xs text-on-surface-variant mb-1">止盈 %</label>
+                            <input id="bt-tp" class="w-full bg-surface border border-outline-variant rounded px-2 py-1.5 text-body-md text-on-surface focus:border-primary outline-none" type="number" value="8" min="1" max="30" step="0.5" />
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button id="bt-run" class="bg-primary text-on-primary px-6 py-2.5 rounded font-headline-md flex items-center gap-2 hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-wait">
+                            <span class="material-symbols-outlined">play_arrow</span>
+                            <span>运行批量回测</span>
+                        </button>
+                        <span id="bt-status" class="font-label-xs text-on-surface-variant hidden">回测中...</span>
+                    </div>
+                </section>
+
+                <!-- ==================== Backtest Results ==================== -->
+                <section id="bt-results-container" class="bg-surface p-5 border border-outline-variant shadow-sm hidden">
+                    <h3 class="font-headline-md text-headline-md text-on-surface mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-tertiary">lab_profile</span>
+                        回测结果
+                    </h3>
+                    <!-- Summary Cards -->
+                    <div id="bt-summary-cards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
+                    <!-- Top Rankings (scan mode) -->
+                    <div id="bt-top-rankings" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5 hidden">
+                        <div class="bg-surface-container-low border border-outline-variant rounded p-3">
+                            <h4 class="font-label-xs text-primary mb-2">🏆 胜率 TOP 10</h4>
+                            <table class="w-full text-body-md" id="bt-top-win"></table>
+                        </div>
+                        <div class="bg-surface-container-low border border-outline-variant rounded p-3">
+                            <h4 class="font-label-xs text-tertiary mb-2">📈 收益 TOP 10</h4>
+                            <table class="w-full text-body-md" id="bt-top-ret"></table>
+                        </div>
+                    </div>
+                    <!-- Per-Symbol Table -->
+                    <h4 class="font-label-xs text-on-surface-variant mb-2 mt-4" id="bt-detail-title">按标的明细</h4>
+                    <div class="overflow-x-auto" id="bt-results-table-container">
+                        <table class="w-full border-collapse text-body-md">
+                            <thead>
+                                <tr class="bg-surface-container-low border-b border-outline-variant text-left">
+                                    <th class="px-3 py-2 font-label-xs text-on-surface-variant uppercase">标的</th>
+                                    <th class="px-3 py-2 font-label-xs text-on-surface-variant uppercase text-right">交易次数</th>
+                                    <th class="px-3 py-2 font-label-xs text-on-surface-variant uppercase text-right">盈利次数</th>
+                                    <th class="px-3 py-2 font-label-xs text-on-surface-variant uppercase text-right">胜率</th>
+                                    <th class="px-3 py-2 font-label-xs text-on-surface-variant uppercase text-right">平均收益</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bt-results-tbody" class="divide-y divide-outline-variant"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- ==================== Stats Cards ==================== -->
+                <section class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="bg-surface-container p-4 border border-outline-variant hover:border-primary/50 transition-colors">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-label-xs text-on-surface-variant">回测总记录</span>
+                            <span class="material-symbols-outlined text-primary">analytics</span>
+                        </div>
+                        <div class="flex items-end gap-2">
+                            <span class="font-display-lg text-[28px] font-bold text-on-surface" id="review-total">0</span>
+                            <span class="font-label-xs text-on-surface-variant mb-1.5">条</span>
+                        </div>
+                    </div>
+                    <div class="bg-surface-container p-4 border border-outline-variant hover:border-primary/50 transition-colors">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-label-xs text-on-surface-variant">历史总胜率</span>
+                            <span class="material-symbols-outlined text-tertiary">trending_up</span>
+                        </div>
+                        <div class="flex items-end gap-2">
+                            <span class="font-display-lg text-[28px] font-bold text-on-surface" id="review-win-rate">--</span>
+                            <span class="font-label-xs text-tertiary mb-1.5" id="review-win-label">综合</span>
+                        </div>
+                    </div>
+                    <div class="bg-surface-container p-4 border border-outline-variant hover:border-primary/50 transition-colors">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-label-xs text-on-surface-variant">累计交易次数</span>
+                            <span class="material-symbols-outlined text-error">receipt_long</span>
+                        </div>
+                        <div class="flex items-end gap-2">
+                            <span class="font-display-lg text-[28px] font-bold text-on-surface" id="review-total-trades">0</span>
+                            <span class="font-label-xs text-on-surface-variant mb-1.5">笔</span>
+                        </div>
+                    </div>
+                    <div class="bg-surface-container p-4 border border-outline-variant hover:border-primary/50 transition-colors">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-label-xs text-on-surface-variant">平均收益比</span>
+                            <span class="material-symbols-outlined text-primary">balance</span>
+                        </div>
+                        <div class="flex items-end gap-2">
+                            <span class="font-display-lg text-[28px] font-bold text-on-surface" id="review-avg-return">--</span>
+                            <span class="font-label-xs text-on-surface-variant mb-1.5">%</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==================== History Table ==================== -->
+                <section class="bg-surface p-4 border border-outline-variant shadow-sm">
+                    <div class="flex items-center justify-between mb-4 px-2">
+                        <h2 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2">
+                            <span class="material-symbols-outlined">history</span>
+                            历史回测记录
+                        </h2>
+                        <div class="flex items-center gap-3">
+                            <button id="bt-refresh-history" class="bg-surface-container border border-outline-variant text-on-surface-variant px-3 py-1.5 rounded text-label-xs flex items-center gap-1 hover:bg-surface-container-highest transition-colors">
+                                <span class="material-symbols-outlined text-[16px]">refresh</span> 刷新
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse">
+                            <thead>
+                                <tr class="bg-surface-container-low border-b border-outline-variant text-left">
+                                    <th class="px-4 py-2 font-label-xs text-on-surface-variant uppercase">日期</th>
+                                    <th class="px-4 py-2 font-label-xs text-on-surface-variant uppercase">回测标题</th>
+                                    <th class="px-4 py-2 font-label-xs text-on-surface-variant uppercase text-right">标的数</th>
+                                    <th class="px-4 py-2 font-label-xs text-on-surface-variant uppercase text-right">总交易</th>
+                                    <th class="px-4 py-2 font-label-xs text-on-surface-variant uppercase text-right">总胜率</th>
+                                    <th class="px-4 py-2 font-label-xs text-on-surface-variant uppercase text-right">均收益</th>
+                                    <th class="px-4 py-2 font-label-xs text-on-surface-variant uppercase text-right">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-outline-variant" id="history-table-body">
+                                <tr class="h-table-row-height"><td class="px-4 py-3 text-on-surface-variant" colspan="7">加载中...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="flex items-center justify-between mt-4 font-label-xs text-on-surface-variant">
+                        <span id="history-count">共 0 条记录</span>
+                    </div>
+                </section>
+            </div>
+        </main>
+        <!-- Detail Modal -->
+        <div id="detail-modal" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 hidden">
+            <div class="bg-surface-container border border-outline-variant rounded-lg p-6 max-w-3xl w-full max-h-[80vh] overflow-y-auto m-4">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-headline-md text-on-surface" id="modal-title">回测详情</h3>
+                    <button id="modal-close" class="material-symbols-outlined text-on-surface-variant hover:text-on-surface p-1">close</button>
+                </div>
+                <div id="modal-body"></div>
+            </div>
+        </div>
+        <script type="module" src="./js/review.js"></script>
+    </body>
+</html>
