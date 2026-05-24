@@ -4,7 +4,7 @@
 
 ## 官网链接
 
-- [登录页面](https://soulmy.asia/%E7%99%BB%E5%BD%95.htm)
+
 - [选股看板](https://soulmy.asia/%E9%80%89%E8%82%A1%E7%9C%8B%E6%9D%BF.html)
 
 ## 项目结构
