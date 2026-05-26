@@ -1,3 +1,4 @@
+import re
 from __future__ import annotations
 
 import asyncio
@@ -15,6 +16,22 @@ from app.services.skills.trend_filter import run_trend_filter
 from app.services.skills.volume_analyzer import run_volume_analyzer
 from app.services.strategy.swing import evaluate_swing_signal
 from app.services.ai.web_search import web_search
+
+_SYMBOL_RE = re.compile(r"^(sh|sz|bj)\.\d{6}$")
+_DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+
+def _validate_symbol(symbol: str) -> str:
+    s = _normalize_symbol(symbol)
+    if not _SYMBOL_RE.match(s):
+        raise ValueError(f"无效的股票代码格式: {symbol}，正确格式如 sh.600519")
+    return s
+
+
+def _validate_date(date_str: str, field_name: str) -> str:
+    if not _DATE_RE.match(date_str):
+        raise ValueError(f"无效的日期格式: {date_str}，正确格式如 2024-01-01")
+    return date_str
 
 
 def _normalize_symbol(symbol: str) -> str:
@@ -287,9 +304,22 @@ def _display_stock_list(stocks: list[dict], max_show: int = 10) -> str:
 
 
 async def execute_tool(name: str, args: dict[str, Any]) -> str:
-    symbol = _normalize_symbol(args.get("symbol", "sh.600519"))
+    try:
+        symbol = _validate_symbol(args.get("symbol", "sh.600519"))
+    except ValueError as e:
+        return str(e)
     start = args.get("start_date") or DEFAULT_START
     end = args.get("end_date") or TODAY
+    if start != DEFAULT_START:
+        try:
+            _validate_date(start, "start_date")
+        except ValueError as e:
+            return str(e)
+    if end != TODAY:
+        try:
+            _validate_date(end, "end_date")
+        except ValueError as e:
+            return str(e)
 
     if name == "search_stocks":
         query = args.get("query", "").strip().lower()

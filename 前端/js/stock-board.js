@@ -1,4 +1,4 @@
-import { apiFetch } from "./api.js";
+import { apiFetch, sanitize } from "./api.js";
 import { initStatus } from "./status.js";
 import { initNavigation } from "./navigation.js";
 import { showTierBadge } from "./tier-guard.js";
@@ -78,13 +78,13 @@ const renderRow = (item) => {
     const rowClass = item.should_buy ? "heat-map-green" : item.status === "red" ? "heat-map-red" : "";
     const signalLabel = signalTypeLabels[item.signal_type] || null;
     const signalBadge = signalLabel
-        ? `<span class="text-[10px] bg-green-500/20 text-green-400 px-1.5 py-0.5 rounded border border-green-500/30">${signalLabel}</span>`
+        ? `<span class="text-[10px] bg-green-500/20 text-green-400 px-1.5 py-0.5 rounded border border-green-500/30">${sanitize(signalLabel)}</span>`
         : "";
 
     return `
         <tr class="h-table-row-height ${rowClass} hover:bg-white/5">
-            <td class="px-4 font-label-xs font-bold text-on-surface">${item.symbol}</td>
-            <td class="px-4 font-body-md text-on-surface">${item.name}</td>
+            <td class="px-4 font-label-xs font-bold text-on-surface">${sanitize(item.symbol)}</td>
+            <td class="px-4 font-body-md text-on-surface">${sanitize(item.name)}</td>
             <td class="px-4 font-label-xs text-right text-on-surface">${formatNumber(item.price)}</td>
             <td class="px-4 font-label-xs text-right text-error">${formatNumber(item.stop_loss)}</td>
             <td class="px-4 font-label-xs text-right text-primary font-bold">${formatNumber(item.r_value, 2)}</td>
@@ -110,8 +110,8 @@ const renderWatchItem = (item) => {
     return `
         <div class="p-2 border border-outline-variant bg-surface rounded ${rise ? "" : "opacity-80"}">
             <div class="flex justify-between items-center mb-2">
-                <span class="font-label-xs text-on-surface">${item.title}</span>
-                <span class="text-[10px] ${txtClass}">${pct}</span>
+                <span class="font-label-xs text-on-surface">${sanitize(item.title)}</span>
+                <span class="text-[10px] ${txtClass}">${sanitize(pct)}</span>
             </div>
             <div class="h-16 flex items-end gap-1">${bars}</div>
         </div>
@@ -125,7 +125,7 @@ const loadCandidates = async () => {
     if (!data.candidates.length) {
         tableBody.innerHTML = `
             <tr class="h-table-row-height">
-                <td class="px-4 text-on-surface-variant" colspan="8">加载失败: ${error.message}</td>
+                <td class="px-4 text-on-surface-variant" colspan="8">暂无标的数据，扫描进行中...</td>
             </tr>`;
         if (progressLabel) progressLabel.textContent = "后台扫描中...";
         if (sentimentLabel) sentimentLabel.textContent = "等待首次扫描";
@@ -164,7 +164,7 @@ loadCandidates().catch((error) => {
     if (tableBody) {
         tableBody.innerHTML = `
             <tr class="h-table-row-height">
-                <td class="px-4 text-on-surface-variant" colspan="7">加载失败: ${error.message}</td>
+                <td class="px-4 text-on-surface-variant" colspan="7">加载失败: ${sanitize(error.message)}</td>
             </tr>
         `;
     }

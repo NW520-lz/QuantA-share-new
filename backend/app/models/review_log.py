@@ -1,4 +1,4 @@
-from sqlalchemy import Date, DateTime, Text, text
+from sqlalchemy import Date, DateTime, ForeignKey, Text, text
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -11,7 +11,10 @@ class ReviewLog(Base):
     id: Mapped[str] = mapped_column(
         UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
     )
-    user_id: Mapped[str] = mapped_column(UUID(as_uuid=True), index=True, nullable=False)
+    user_id: Mapped[str] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"),
+        index=True, nullable=False,
+    )
     log_date: Mapped[Date] = mapped_column(Date, nullable=False)
     title: Mapped[str | None] = mapped_column(Text)
     content: Mapped[str | None] = mapped_column(Text)

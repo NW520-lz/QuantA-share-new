@@ -1,4 +1,4 @@
-import { apiFetch } from "./api.js";
+import { apiFetch, sanitize, getToken } from "./api.js";
 import { initStatus } from "./status.js";
 import { initNavigation } from "./navigation.js";
 import { requireTier } from "./tier-guard.js";
@@ -46,8 +46,8 @@ const renderRow = (position) => {
     return `
         <tr class="border-b border-outline-variant hover:bg-surface-container-highest transition-colors">
             <td class="px-4 py-2">
-                <div class="font-bold text-on-surface">${position.name || "--"}</div>
-                <div class="text-[10px] text-on-surface-variant">${position.symbol}</div>
+                <div class="font-bold text-on-surface">${sanitize(position.name) || "--"}</div>
+                <div class="text-[10px] text-on-surface-variant">${sanitize(position.symbol)}</div>
             </td>
             <td class="px-4 py-2 text-right">${formatNumber(quantity, 0)}</td>
             <td class="px-4 py-2 text-right">${formatNumber(position.avg_price)}</td>
@@ -55,7 +55,7 @@ const renderRow = (position) => {
             <td class="px-4 py-2 text-right">${formatNumber(position.last_price)}</td>
             <td class="px-4 py-2 text-right ${pnlClass}">${formatPercent(position.pnl_pct)}</td>
             <td class="px-4 py-2 text-right ${pnlClass}">${formatNumber(position.pnl)}</td>
-            <td class="px-4 py-2 text-right">${position.risk_level || "--"}</td>
+            <td class="px-4 py-2 text-right">${sanitize(position.risk_level) || "--"}</td>
             <td class="px-4 py-2 text-center"><span class="inline-block w-2 h-2 ${statusClass} rounded-full"></span></td>
         </tr>
     `;
@@ -67,10 +67,10 @@ const renderCandidateCard = (item) => {
         <div class="bg-surface-container-low border border-outline-variant p-4 hover:border-primary transition-colors cursor-pointer group relative overflow-hidden">
             <div class="flex justify-between items-start mb-2">
                 <div>
-                    <h3 class="font-bold text-on-surface">${item.name}</h3>
-                    <p class="text-label-xs font-label-xs text-on-surface-variant">${item.symbol}</p>
+                    <h3 class="font-bold text-on-surface">${sanitize(item.name)}</h3>
+                    <p class="text-label-xs font-label-xs text-on-surface-variant">${sanitize(item.symbol)}</p>
                 </div>
-                <span class="text-xs px-2 py-0.5 bg-primary-container text-primary rounded">${item.tag}</span>
+                <span class="text-xs px-2 py-0.5 bg-primary-container text-primary rounded">${sanitize(item.tag)}</span>
             </div>
             <div class="grid grid-cols-2 gap-y-2 mt-4 text-sm">
                 <div class="text-on-surface-variant">买入参考</div><div class="text-right font-data-tabular">${formatNumber(item.price)}</div>
@@ -177,7 +177,7 @@ const savePosition = async () => {
         if (posLastPriceEl) posLastPriceEl.value = "";
         await loadDashboard();
     } catch (error) {
-        const msg = error.message || String(error);
+        const msg = sanitize(error.message || String(error));
         if (posSaveMsg) posSaveMsg.innerHTML = `<span class="text-error">保存失败: ${msg}</span>`;
     } finally {
         if (posSaveBtn) posSaveBtn.disabled = false;
@@ -196,7 +196,7 @@ const clearAllPositions = async () => {
 };
 
 const exportPositions = () => {
-    const token = localStorage.getItem("token");
+    const token = getToken();
     if (!token) {
         alert("未登录");
         return;
@@ -235,7 +235,7 @@ Promise.all([loadDashboard(), loadWalletBalance()]).catch((error) => {
     if (tableBody) {
         tableBody.innerHTML = `
             <tr class="border-b border-outline-variant">
-                <td class="px-4 py-3 text-on-surface-variant" colspan="9">加载失败: ${error.message}</td>
+                <td class="px-4 py-3 text-on-surface-variant" colspan="9">加载失败: ${sanitize(error.message)}</td>
             </tr>
         `;
     }

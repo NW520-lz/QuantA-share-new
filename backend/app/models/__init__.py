@@ -8,16 +8,11 @@ from app.models.user_setting import UserSetting
 from app.models.billing_plan import BillingPlan
 from app.models.email_verification_code import EmailVerificationCode
 from app.models.payment_order import PaymentOrder
-from app.models.position import Position
-from app.models.review_log import ReviewLog
-from app.models.strategy import Strategy
 from app.models.system_event_log import SystemEventLog
-from app.models.trade import Trade
-from app.models.user import User
-from app.models.user_setting import UserSetting
 from app.models.user_subscription import UserSubscription
 
 __all__ = [
+    "Base",
     "User",
     "UserSetting",
     "Strategy",

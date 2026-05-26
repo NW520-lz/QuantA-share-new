@@ -1,6 +1,10 @@
 import asyncio
 import os
+import time
 from typing import Any
+
+_STOCK_LIST_CACHE: dict[str, Any] = {"data": None, "ts": 0}
+_STOCK_LIST_TTL = 1800  # 30分钟缓存
 
 
 async def get_daily_data(
@@ -8,34 +12,55 @@ async def get_daily_data(
 ) -> list[dict[str, Any]]:
     def _fetch() -> list[dict[str, Any]]:
         with _no_proxy():
-            data = _fetch_baostock(symbol, start_date, end_date)
+            data = _fetch_akshare(symbol, start_date, end_date)
             if data:
                 return data
-            data = _fetch_akshare(symbol, start_date, end_date)
+        with _no_proxy():
+            data = _fetch_baostock(symbol, start_date, end_date)
             return data
 
     return await asyncio.to_thread(_fetch)
 
 
+async def get_batch_daily_data(
+    symbols: list[str], start_date: str, end_date: str
+) -> dict[str, list[dict[str, Any]]]:
+
+    def _fetch_batch() -> dict[str, list[dict[str, Any]]]:
+        results: dict[str, list[dict[str, Any]]] = {}
+        with _no_proxy():
+            for sym in symbols:
+                try:
+                    data = _fetch_akshare(sym, start_date, end_date)
+                    if len(data) >= 30:
+                        results[sym] = data
+                except Exception:
+                    pass
+        return results
+
+    return await asyncio.wait_for(asyncio.to_thread(_fetch_batch), timeout=300)
+
+
 async def get_all_a_stocks() -> list[dict]:
+    now = time.time()
+    if _STOCK_LIST_CACHE["data"] is not None and now - _STOCK_LIST_CACHE["ts"] < _STOCK_LIST_TTL:
+        return _STOCK_LIST_CACHE["data"]
+
     def _fetch() -> list[dict]:
         import akshare as ak
 
         with _no_proxy():
-            # 获取实时行情（含市值、行业）
             try:
                 spot_df = ak.stock_zh_a_spot_em()
             except Exception:
                 spot_df = None
 
-        # 构建市值/行业映射 {code: {market_cap_billion, industry}}
         extra: dict[str, dict] = {}
         if spot_df is not None and not spot_df.empty:
             for _, row in spot_df.iterrows():
                 code = str(row.get("代码", "")).strip()
                 if not code:
                     continue
-                # 总市值列名可能是"总市值"，单位元，转亿
                 cap_raw = row.get("总市值")
                 try:
                     cap_billion = float(cap_raw) / 1e8 if cap_raw else None
@@ -89,7 +114,10 @@ async def get_all_a_stocks() -> list[dict]:
 
         return stocks
 
-    return await asyncio.to_thread(_fetch)
+    result = await asyncio.to_thread(_fetch)
+    _STOCK_LIST_CACHE["data"] = result
+    _STOCK_LIST_CACHE["ts"] = time.time()
+    return result
 
 
 def _fetch_akshare(symbol: str, start_date: str, end_date: str) -> list[dict[str, Any]]:

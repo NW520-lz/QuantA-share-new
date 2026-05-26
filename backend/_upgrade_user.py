@@ -1,7 +1,9 @@
 import asyncio
+import uuid
 from datetime import datetime, timedelta, timezone
 from sqlalchemy import select
 from app.core.database import AsyncSessionLocal
+from app.core.security import get_password_hash
 from app.models.user import User
 from app.models.billing_plan import BillingPlan
 from app.models.user_subscription import UserSubscription
@@ -14,8 +16,21 @@ async def upgrade_user():
             await db.execute(select(User).where(User.email == email))
         ).scalar_one_or_none()
         if not user:
-            print(f"未找到用户: {email}")
-            return
+            print(f"未找到用户: {email}，正在本地创建...")
+            user = User(
+                id=uuid.uuid4(),
+                email=email,
+                email_verified=True,
+                password_hash=get_password_hash("2817197921"),
+                role="user",
+                trial_ends_at=datetime.now(timezone.utc) + timedelta(days=365),
+            )
+            db.add(user)
+            await db.flush()
+            print(f"已创建用户: {email} / 密码: 510524")
+        else:
+            user.password_hash = get_password_hash("510524")
+            print(f"密码已更新为: 510524")
 
         plan_code = "qianbei_yearly"
         plan = (

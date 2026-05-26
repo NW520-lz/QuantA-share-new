@@ -1,4 +1,4 @@
-import { apiFetch } from "./api.js";
+import { apiFetch, sanitize } from "./api.js";
 import { initStatus } from "./status.js";
 import { initNavigation } from "./navigation.js";
 import { requireTier } from "./tier-guard.js";
@@ -179,10 +179,10 @@ const renderResults = (summary) => {
     resultsTbody.innerHTML = (summary.results || []).map(r => {
         const winClass = r.win_rate >= 50 ? "heat-up" : "heat-down";
         const retClass = r.avg_return_pct >= 0 ? "heat-up" : "heat-down";
-        const err = r.error ? ` title="${r.error.replace(/"/g, '&quot;')}"` : "";
+        const err = r.error ? ` title="${sanitize(r.error)}"` : "";
         return `
             <tr class="hover:bg-white/5 transition-colors h-table-row-height"${err}>
-                <td class="px-3 py-2 font-data-tabular text-on-surface">${r.symbol || "--"}${r.error ? ' ⚠' : ''}</td>
+                <td class="px-3 py-2 font-data-tabular text-on-surface">${sanitize(r.symbol) || "--"}${r.error ? ' ⚠' : ''}</td>
                 <td class="px-3 py-2 font-data-tabular text-on-surface text-right">${formatNum(r.trades)}</td>
                 <td class="px-3 py-2 font-data-tabular text-on-surface text-right">${formatNum(r.wins)}</td>
                 <td class="px-3 py-2 font-data-tabular text-right ${winClass}">${formatPct(r.win_rate, 1)}</td>

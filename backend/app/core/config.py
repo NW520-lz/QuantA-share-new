@@ -41,7 +41,7 @@ class Settings(BaseSettings):
     brave_api_key: str = Field("", alias="BRAVE_API_KEY")
 
     cors_allow_origins: str = Field(
-        "http://localhost:3000,http://localhost:5173,http://127.0.0.1:5500,http://localhost:5500,null",
+        "http://localhost:3000,http://localhost:5173,http://127.0.0.1:5500,http://localhost:5500",
         alias="CORS_ALLOW_ORIGINS",
     )
     smtp_host: str = Field("", alias="SMTP_HOST")
@@ -57,16 +57,29 @@ class Settings(BaseSettings):
     # 本地开发填 http://127.0.0.1:5500，部署后填域名
     frontend_base_url: str = Field("", alias="FRONTEND_BASE_URL")
     # 支付FM 配置（商户后台"用户中心"页面查看）
-    zhifufm_api_url: str = Field("", alias="ZHIFUFM_API_URL")       # 接口根地址，如 https://xxx.com
+    zhifufm_api_url: str = Field(
+        "", alias="ZHIFUFM_API_URL"
+    )  # 接口根地址，如 https://xxx.com
     zhifufm_merchant_num: str = Field("", alias="ZHIFUFM_MERCHANT_NUM")  # 商户号
-    zhifufm_secret: str = Field("", alias="ZHIFUFM_SECRET")          # 接入密钥
-    zhifufm_pay_type: str = Field("aloop", alias="ZHIFUFM_PAY_TYPE") # 支付方式，推荐 aloop 或 tloop
-    zhifufm_notify_url: str = Field("", alias="ZHIFUFM_NOTIFY_URL")  # 公网可访问的回调地址
+    zhifufm_secret: str = Field("", alias="ZHIFUFM_SECRET")  # 接入密钥
+    zhifufm_pay_type: str = Field(
+        "aloop", alias="ZHIFUFM_PAY_TYPE"
+    )  # 支付方式，推荐 aloop 或 tloop
+    zhifufm_notify_url: str = Field(
+        "", alias="ZHIFUFM_NOTIFY_URL"
+    )  # 公网可访问的回调地址
     # 管理员 API 密钥（用于手动确认打赏订单等）
-    admin_secret: str = Field("change_me_admin_secret", alias="ADMIN_SECRET")
+    admin_secret: str = Field(..., alias="ADMIN_SECRET")
+    # 扫描器首次延迟（秒），默认 60；设 0 立即开始
+    scanner_first_delay_seconds: int = Field(10, alias="SCANNER_FIRST_DELAY_SECONDS")
+    # 设为 1 跳过启动时的首次全量扫描
+    skip_initial_scan: int = Field(0, alias="SKIP_INITIAL_SCAN")
 
     model_config = SettingsConfigDict(
-        env_file=".env", env_file_encoding="utf-8", extra="ignore"
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore",
+        case_sensitive=False,
     )
 
     @property

@@ -1,4 +1,5 @@
 import hashlib
+import hmac
 from datetime import datetime, timedelta, timezone
 from urllib.parse import urlencode
 from uuid import UUID
@@ -344,7 +345,7 @@ async def payment_notify(
     if state != "1":
         return PlainTextResponse("success")  # 非成功状态，忽略但返回 success
 
-    # 通过 orderNo（UUID 去横线）找到订单
+    # 通过 orderNo（UUID 去横线）找到订单，使用行锁防止并发重复处理
     try:
         order_uuid = UUID(
             order_no[:8]
@@ -361,7 +362,9 @@ async def payment_notify(
         return PlainTextResponse("fail")
 
     order = (
-        await db.execute(select(PaymentOrder).where(PaymentOrder.id == order_uuid))
+        await db.execute(
+            select(PaymentOrder).where(PaymentOrder.id == order_uuid).with_for_update()
+        )
     ).scalar_one_or_none()
     if not order:
         return PlainTextResponse("fail")
@@ -435,7 +438,7 @@ async def admin_confirm_order(
     db: AsyncSession = Depends(get_db),
 ) -> dict:
     """管理员手动确认打赏订单，决定是否赠送道友期。"""
-    if not x_admin_secret or x_admin_secret != settings.admin_secret:
+    if not x_admin_secret or not hmac.compare_digest(x_admin_secret, settings.admin_secret):
         raise HTTPException(status_code=403, detail="Forbidden")
 
     try:
@@ -476,7 +479,7 @@ async def admin_list_pending(
     db: AsyncSession = Depends(get_db),
 ) -> list[dict]:
     """管理员查看待处理的打赏订单。"""
-    if not x_admin_secret or x_admin_secret != settings.admin_secret:
+    if not x_admin_secret or not hmac.compare_digest(x_admin_secret, settings.admin_secret):
         raise HTTPException(status_code=403, detail="Forbidden")
 
     orders = (

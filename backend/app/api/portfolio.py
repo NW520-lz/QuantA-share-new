@@ -82,7 +82,7 @@ async def upsert_position(
     except Exception as exc:
         logger.error(f"Position upsert failed: {exc}", exc_info=True)
         await db.rollback()
-        raise HTTPException(status_code=500, detail=str(exc))
+        raise HTTPException(status_code=500, detail="持仓保存失败，请稍后再试")
 
 
 @router.post("/risk", response_model=RiskResponse)

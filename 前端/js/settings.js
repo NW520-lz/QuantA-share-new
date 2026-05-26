@@ -1,4 +1,4 @@
-import { apiFetch } from "./api.js";
+import { apiFetch, sanitize } from "./api.js";
 import { initStatus } from "./status.js";
 import { initNavigation } from "./navigation.js";
 import { requireTier } from "./tier-guard.js";
@@ -75,10 +75,10 @@ const renderLogs = (logs) => {
             const statusClass = log.status === "SUCCESS" || log.status === "OK" ? "text-primary" : log.status === "WARN" ? "text-error" : "text-on-surface-variant";
             return `
                 <tr class="hover:bg-surface-container-highest/50 transition-colors">
-                    <td class="px-4 h-table-row-height">${ts}</td>
-                    <td class="px-4 h-table-row-height ${levelClass}">${log.level}</td>
-                    <td class="px-4 h-table-row-height">${log.message}</td>
-                    <td class="px-4 h-table-row-height"><span class="${statusClass}">${log.status}</span></td>
+                    <td class="px-4 h-table-row-height">${sanitize(ts)}</td>
+                    <td class="px-4 h-table-row-height ${levelClass}">${sanitize(log.level)}</td>
+                    <td class="px-4 h-table-row-height">${sanitize(log.message)}</td>
+                    <td class="px-4 h-table-row-height"><span class="${statusClass}">${sanitize(log.status)}</span></td>
                 </tr>
             `;
         })

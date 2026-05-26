@@ -1,5 +1,4 @@
-import { apiFetch } from './api.js';
-import { apiFetch, formatDate } from "./api.js";
+import { apiFetch, formatDate, sanitize } from "./api.js";
 import { initStatus } from "./status.js";
 import { initNavigation } from "./navigation.js";
 import { requireTier } from "./tier-guard.js";
@@ -72,8 +71,8 @@ const renderIndustryExclusions = () => {
         .map(
             (item) => `
             <span class="px-2 py-1 rounded-sm bg-surface-container-highest text-label-xs text-on-surface-variant flex items-center gap-1 border border-outline-variant">
-                ${item}
-                <button class="material-symbols-outlined text-[12px] cursor-pointer hover:text-error" data-remove-industry="${item}" type="button">close</button>
+                ${sanitize(item)}
+                <button class="material-symbols-outlined text-[12px] cursor-pointer hover:text-error" data-remove-industry="${sanitize(item)}" type="button">close</button>
             </span>
         `
         )

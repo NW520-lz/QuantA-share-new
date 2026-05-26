@@ -2,15 +2,26 @@ from datetime import datetime
 from typing import Any, Optional
 from uuid import UUID
 
+import re
+
 from pydantic import BaseModel, EmailStr, Field, field_validator
 from pydantic import ConfigDict
+
+_PASSWORD_RE = re.compile(r"^(?=.*[a-zA-Z])(?=.*\d).{8,}$")
 
 
 class RegisterRequest(BaseModel):
     uid: Optional[str] = Field(default=None, max_length=64)
     phone: Optional[str] = Field(default=None, max_length=32)
     email: Optional[EmailStr] = None
-    password: str = Field(min_length=6, max_length=128)
+    password: str = Field(min_length=8, max_length=128)
+
+    @field_validator("password")
+    @classmethod
+    def validate_password_strength(cls, v: str) -> str:
+        if not _PASSWORD_RE.match(v):
+            raise ValueError("密码至少8位，且必须包含字母和数字")
+        return v
 
 
 class LoginRequest(BaseModel):
@@ -26,8 +37,15 @@ class SendEmailCodeRequest(BaseModel):
 class RegisterByEmailRequest(BaseModel):
     email: EmailStr
     code: str = Field(min_length=4, max_length=8)
-    password: str = Field(min_length=6, max_length=128)
+    password: str = Field(min_length=8, max_length=128)
     uid: Optional[str] = Field(default=None, max_length=64)
+
+    @field_validator("password")
+    @classmethod
+    def validate_password_strength(cls, v: str) -> str:
+        if not _PASSWORD_RE.match(v):
+            raise ValueError("密码至少8位，且必须包含字母和数字")
+        return v
 
 
 class Token(BaseModel):

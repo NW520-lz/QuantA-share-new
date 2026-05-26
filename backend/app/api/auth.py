@@ -1,9 +1,10 @@
 import hashlib
 import hmac
 import secrets
+import time
 from datetime import datetime, timedelta, timezone
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy import and_, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -130,7 +131,8 @@ async def send_email_code(payload: SendEmailCodeRequest, db: AsyncSession = Depe
     try:
         await send_verification_email(email, code)
     except Exception as exc:
-        raise HTTPException(status_code=502, detail=f"Send email failed: {exc}") from exc
+        logger.error(f"Send email failed: {exc}", exc_info=True)
+        raise HTTPException(status_code=502, detail="邮件发送失败，请稍后再试") from exc
 
     return {"message": "Verification code sent", "expires_at": expires_at, "retry_after": 60}
 
@@ -183,15 +185,47 @@ async def register_by_email(payload: RegisterByEmailRequest, db: AsyncSession = 
     return user
 
 
+_login_attempts: dict[str, tuple[int, float]] = {}
+_MAX_ATTEMPTS = 5
+_WINDOW_SECONDS = 300
+
+
+def _check_login_rate_limit(login: str) -> None:
+    now = time.time()
+    attempts, first_time = _login_attempts.get(login, (0, now))
+    if now - first_time > _WINDOW_SECONDS:
+        _login_attempts[login] = (1, now)
+        return
+    if attempts >= _MAX_ATTEMPTS:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=f"登录尝试次数过多，请 {_WINDOW_SECONDS // 60} 分钟后重试",
+        )
+    _login_attempts[login] = (attempts + 1, first_time)
+
+
 @router.post("/login", response_model=Token)
-async def login(payload: LoginRequest, db: AsyncSession = Depends(get_db)) -> Token:
+async def login(
+    request: Request,
+    payload: LoginRequest,
+    db: AsyncSession = Depends(get_db),
+) -> Token:
+    _check_login_rate_limit(payload.login)
     user = await _find_user_by_login(db, payload.login)
     if not user or not verify_password(payload.password, user.password_hash):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
-    subscription = await _get_active_subscription(db, user.id)
+    subscription = await _get_active_subscription(db, str(user.id))
     now = datetime.now(timezone.utc)
-    trial_valid = bool(user.trial_ends_at and user.trial_ends_at >= now)
+    
+    # 确保 trial_ends_at 比较安全
+    trial_valid = False
+    if user.trial_ends_at:
+        trial_at = user.trial_ends_at
+        if trial_at.tzinfo is None:
+            trial_at = trial_at.replace(tzinfo=timezone.utc)
+        trial_valid = trial_at >= now
+
     token = create_access_token(str(user.id))
     return Token(
         access_token=token,

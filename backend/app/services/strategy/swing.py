@@ -121,7 +121,7 @@ def evaluate_yy_filter(data: list[dict[str, Any]]) -> dict[str, Any]:
     if len(closes) >= 8:
         consecutive = True
         for i in range(len(closes) - 7, len(closes)):
-            if closes[i - 1] <= 0:
+            if closes[i - 1] <= 0 or closes[i] <= 0:
                 consecutive = False
                 break
             pct = closes[i] / closes[i - 1]
@@ -530,23 +530,23 @@ def evaluate_swing_signal(
     #   核心：多周期趋势共振 + 超常放量 + 收盘强势 + 涨停基因
     # ============================================================
     has_buy_trigger = breakout or pullback_hold or breakout_signal
-    vol_blast = volume_ratio is not None and volume_ratio >= 2.5
-    r_strong = r_value is not None and r_value >= 0.8
+    vol_blast = volume_ratio is not None and volume_ratio >= 1.5
+    r_strong = r_value is not None and r_value >= 0.6
 
-    pattern_a = breakout_signal and score >= 7 and vol_blast and r_strong
+    pattern_a = breakout_signal and score >= 4 and vol_blast and r_strong
 
     pattern_b = (
         trend_ok
         and golden_cross
         and has_buy_trigger
-        and score >= 7
+        and score >= 5
         and vol_blast
         and r_strong
-        and recent_limit_up
-        and yy_pass
     )
 
-    should_buy = pattern_a or pattern_b
+    pattern_c = has_buy_trigger and score >= 5 and vol_blast and r_strong and recent_limit_up
+
+    should_buy = pattern_a or pattern_b or pattern_c
 
     stop_loss = ma20
     take_profit = closes[-1] * 1.3 if closes[-1] > 0 else None
@@ -556,6 +556,8 @@ def evaluate_swing_signal(
     if should_buy:
         if breakout_signal:
             signal_type = "limitup_breakout"
+        elif golden_cross:
+            signal_type = "trend"
         elif pullback_hold:
             signal_type = "pullback"
         elif breakout:
